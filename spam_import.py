@@ -16,6 +16,7 @@ url = 'http://127.0.0.1:8000/area/'
 # , 'CAN', 'NOR', 'FIN', 'SWE', 'GBR', 'EST', 'LVA', 'DNK', 'LTU', 'BLR', 'KAZ', 'IRL'
 # , 'DEU', 'POL', 'NLD', 'UKR', 'BEL', 'FRA', 'CZE', 'LUX', 'SVK', 'AUT', 'HUN', 'MDA'
 # , 'ROU', 'CHE', 'ITA', 'SVN', 'HRV', 'SRB', 'BIH', 'UZB', 'BGR', 'ESP', 'MNE', 'GEO'
+
 # , 'KGZ', 'TKM', 'ALB', 'MKD', 'PRT', 'TUR', 'AZE', 'GRC', 'ARM', 'TJK', 'CYP', 'MEX'
 # , 'CUB', 'HTI', 'DOM', 'JAM', 'PRI', 'BLZ', 'GLP', 'GTM', 'VIR', 'ATG', 'KNA', 'MSR'
 # , 'HND', 'DMA', 'NIC', 'MTQ', 'SLV', 'LCA', 'VCT', 'BRB', 'COL', 'GRD', 'VEN', 'TTO'
@@ -28,7 +29,7 @@ url = 'http://127.0.0.1:8000/area/'
 # , 'RWA', 'BDI', 'SYC', 'AGO', 'ZMB', 'MWI', 'MUS', 'MOZ', 'MDG', 'ZWE', 'NAM', 'BWA'
 # , 'ZAF', 'SWZ', 'LSO', 'USA']
 # for cnt in p['iso3'].unique():
-for cnt in ['AFG']:
+for cnt in ['BTN', 'BGD', 'KHM', 'IDN', 'BRN', 'MNG', 'JPN', 'PRK', 'KOR', , 'PAK', 'NPL', 'MMR', 'VNM', 'LAO', 'PHL', 'THA', 'LKA', 'MYS', 'MDV', 'SGP', 'TLS', 'CAN', 'NOR', 'FIN', 'SWE', 'GBR', 'EST', 'LVA', 'DNK', 'LTU', 'BLR', 'KAZ', 'IRL', 'DEU', 'POL', 'NLD', 'UKR', 'BEL', 'FRA', 'CZE', 'LUX', 'SVK', 'AUT', 'HUN', 'MDA', 'ROU', 'CHE', 'ITA', 'SVN', 'HRV', 'SRB', 'BIH', 'UZB', 'BGR', 'ESP', 'MNE', 'GEO']:
 	print cnt
 	p_cnt = p[p['iso3'] == str(cnt)].to_json(orient = 'records')
 	tt = json.loads(p_cnt)
