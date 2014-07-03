@@ -18,5 +18,11 @@ router.register(r'area_all', views.AreaAllViewSet)
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^pages/', include('django.contrib.flatpages.urls')),
 )
+
+# import autocomplete_light
+# import every app/autocomplete_light_registry.py
+# autocomplete_light.autodiscover()
+
+#import admin
+#admin.autodiscover()

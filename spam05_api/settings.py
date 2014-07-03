@@ -39,8 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'quickstart',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
+    'autocomplete_light',
 )
 
 MIDDLEWARE_CLASSES = (

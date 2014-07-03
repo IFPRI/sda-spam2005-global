@@ -108,7 +108,7 @@ class AreaViewSet(viewsets.ModelViewSet):
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
-
+    
 class AreaAllViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows yields to be viewed or edited.
@@ -125,4 +125,3 @@ class AreaAllViewSet(viewsets.ModelViewSet):
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
-    
