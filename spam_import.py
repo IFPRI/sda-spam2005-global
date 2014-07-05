@@ -51,5 +51,5 @@ for cnt in ['KGZ', 'TKM', 'ALB', 'MKD', 'PRT', 'TUR', 'AZE', 'GRC', 'ARM', 'TJK'
 # print data
 
 # stats = p.groupby('iso3').size()
-print stats
-print stats['CAN']
+# print stats
+# print stats['CAN']

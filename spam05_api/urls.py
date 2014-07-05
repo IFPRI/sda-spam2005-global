@@ -12,6 +12,8 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'area', views.AreaViewSet)
 router.register(r'area_all', views.AreaAllViewSet)
+router.register(r'yield', views.YieldViewSet)
+router.register(r'yield_all', views.YieldAllViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.
