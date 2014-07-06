@@ -14,6 +14,8 @@ router.register(r'area', views.AreaViewSet)
 router.register(r'area_all', views.AreaAllViewSet)
 router.register(r'yield', views.YieldViewSet)
 router.register(r'yield_all', views.YieldAllViewSet)
+router.register(r'prod', views.ProdViewSet)
+router.register(r'prod_all', views.ProdAllViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.

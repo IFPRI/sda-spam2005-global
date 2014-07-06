@@ -10,6 +10,7 @@ import json
 p = pd.read_csv('/home/djuser/spam2005_data/spam2005_a.csv') # server
 p.columns = map(str.lower, p.columns)
 print p['iso3'].unique()
+print len(p)
 url = 'http://127.0.0.1:8000/area/'
 # ['CHN', 'AFG', 'IND', 'BTN', 'BGD', 'KHM', 'IDN', 'BRN', 'MNG', 'JPN', 'PRK', 'KOR'
 # , 'PAK', 'NPL', 'MMR', 'VNM', 'LAO', 'PHL', 'THA', 'LKA', 'MYS', 'MDV', 'SGP', 'TLS'
