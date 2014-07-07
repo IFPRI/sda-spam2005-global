@@ -11,7 +11,7 @@ p = pd.read_csv('/home/djuser/spam2005_data/spam2005_y.csv') # server
 p.columns = map(str.lower, p.columns)
 print p['iso3'].unique()
 url = 'http://127.0.0.1:8000/yield/'
-for cnt in p['iso3'].unique()
+for cnt in p['iso3'].unique():
 	print cnt
 	p_cnt = p[p['iso3'] == str(cnt)].to_json(orient = 'records')
 	tt = json.loads(p_cnt)
