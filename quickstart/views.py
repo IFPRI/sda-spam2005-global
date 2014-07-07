@@ -4,8 +4,8 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.contrib.auth.models import User, Group
-from quickstart.models import Area, Yield, Prod
-from quickstart.serializers import UserSerializer, GroupSerializer, AreaSerializer, YieldSerializer, ProdSerializer
+from quickstart.models import Area, Yield, Prod, Harvested
+from quickstart.serializers import UserSerializer, GroupSerializer, AreaSerializer, YieldSerializer, ProdSerializer, HarvestedSerializer
 from rest_framework import viewsets, views, generics, filters
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework_csv.renderers import CSVRenderer
@@ -194,3 +194,39 @@ class ProdAllViewSet(viewsets.ModelViewSet):
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
+
+class HarvestedViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows yields to be viewed or edited.
+    """
+    queryset = Harvested.objects.all()
+    serializer_class = HarvestedSerializer
+
+    paginate_by = 20
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
+
+    def get_queryset(self):
+        queryset = Harvested.objects.all()
+        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
+        if iso3 is not None:
+            iso3 = iso3.split(',')
+            queryset = queryset.filter(iso3__in=iso3)
+        return queryset
+    
+class HarvestedAllViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows yields to be viewed or edited.
+    """
+    queryset = Harvested.objects.all()
+    serializer_class = HarvestedSerializer
+    paginate_by = None
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer)
+
+    def get_queryset(self):
+        queryset = Harvested.objects.all()
+        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
+        if iso3 is not None:
+            iso3 = iso3.split(',')
+            queryset = queryset.filter(iso3__in=iso3)
+        return queryset
+
