@@ -7,7 +7,7 @@ import json
 # p = pd.read_csv('/media/data/Projects/spam2005-global/spam2005_a_sample.csv')
 # headers = { 'Content-Type' : 'application/json' }
 # p = pd.read_csv('/media/data/Projects/Datasets/spam2005/spam2005_a.csv') # local
-p = pd.read_csv('/home/djuser/spam2005_data/spam2005_p.csv') # server
+p = pd.read_csv('/home/Datasets/spam2005_p.csv') # server
 p.columns = map(str.lower, p.columns)
 print p['iso3'].unique()
 url = 'http://127.0.0.1:8000/prod/'
