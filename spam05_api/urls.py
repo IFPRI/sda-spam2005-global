@@ -1,11 +1,18 @@
-from django.conf.urls import patterns, include, url
-
 # from django.contrib import admin
 # admin.autodiscover()
 
 from django.conf.urls import patterns, url, include
 from rest_framework import routers
 from quickstart import views
+
+from django.http import HttpResponse
+from quickstart.views import RouterView, some_view, some_streaming_csv_view
+
+routerRaw = RouterView()
+routerRaw.register(
+	(r'^foo/test', some_view),
+    (r'^foo/area_all', some_streaming_csv_view),
+)
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -22,6 +29,7 @@ router.register(r'harvested_all', views.HarvestedAllViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.
 urlpatterns = patterns('',
+	url(r'^foo/', routerRaw),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )

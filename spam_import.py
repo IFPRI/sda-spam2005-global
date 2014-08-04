@@ -7,7 +7,7 @@ import json
 # p = pd.read_csv('/media/data/Projects/spam2005-global/spam2005_a_sample.csv')
 # headers = { 'Content-Type' : 'application/json' }
 # p = pd.read_csv('/media/data/Projects/Datasets/spam2005/spam2005_a.csv') # local
-p = pd.read_csv('/home/djuser/spam2005_data/spam2005_a.csv') # server
+p = pd.read_csv('//spam2005_a_sample.csv') # server
 p.columns = map(str.lower, p.columns)
 print p['iso3'].unique()
 print len(p)

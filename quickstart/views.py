@@ -8,7 +8,7 @@ from quickstart.models import Area, Yield, Prod, Harvested
 from quickstart.serializers import UserSerializer, GroupSerializer, AreaSerializer, YieldSerializer, ProdSerializer, HarvestedSerializer
 from rest_framework import viewsets, views, generics, filters
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
-from rest_framework_csv.renderers import CSVRenderer
+from rest_framework_csv.renderers import CSVRenderer, BaseRenderer
 from six import StringIO, text_type
 import csv
 import json
@@ -17,6 +17,73 @@ try:
 except ImportError:
     import sys    
     PY2 = sys.version_info[0] == 2
+
+import re
+from django.http import Http404, HttpResponse, StreamingHttpResponse
+from django.utils.datastructures import SortedDict
+from django.utils.six.moves import range
+
+from osgeo import gdal_array, gdal
+import numpy
+
+class RouterView(object):
+    def __init__(self):
+        self.mapping = SortedDict()
+
+    def register(self, *args):
+        for regex, view_func in args:
+            self.mapping[re.compile(regex)] = view_func
+
+    def __call__(self, request, *args, **kwargs):
+        for regex, view_func in self.mapping.items():
+            if regex.match(request.path[1:]):
+                return view_func(request, *args, **kwargs)
+        # does not match
+        raise Http404
+
+def some_view(request):
+    return HttpResponse('test')
+
+class Echo(object):
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+def some_streaming_csv_view(request):
+    """A view that streams a large CSV file."""
+    # Generate a sequence of rows. The range is based on the maximum number of
+    # rows that can be handled by a single sheet in most spreadsheet
+    # applications.
+    queryset = Area.objects.all()
+    rows = (["Row {0}".format(idx), str(idx)] for idx in range(65536))
+    rows = queryset
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="export.csv"'
+    return response
+
+class TestViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows yields to be viewed or edited.
+    """
+    queryset = Area.objects.all()
+    serializer_class = AreaSerializer
+
+    paginate_by = 20
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
+
+    def get_queryset(self):
+        queryset = Area.objects.all()
+        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
+        if iso3 is not None:
+            iso3 = iso3.split(',')
+            queryset = queryset.filter(iso3__in=iso3)
+        return queryset
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -142,7 +209,21 @@ class YieldViewSet(viewsets.ModelViewSet):
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
-    
+
+class GeoTIFFRenderer(BaseRenderer):
+    media_type = 'image/tiff'
+    format = 'geotiff'
+    charset = None
+    render_style = 'binary'
+    headers = None
+
+    def render(self, data, media_type=None, renderer_context=None):
+        ndata = numpy.array(data)
+        src = gdal_array.OpenArray(ndata)
+        band = src.GetRasterBand(0)
+        data = band.ReadAsArray()
+        return data
+
 class YieldAllViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows yields to be viewed or edited.
@@ -150,7 +231,7 @@ class YieldAllViewSet(viewsets.ModelViewSet):
     queryset = Yield.objects.all()
     serializer_class = YieldSerializer
     paginate_by = None
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, GeoTIFFRenderer)
 
     def get_queryset(self):
         queryset = Yield.objects.all()
