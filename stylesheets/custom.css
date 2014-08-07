@@ -10,6 +10,8 @@ h3 {
 
 #banner {
 	right: 0px;
+	margin: 0 auto;
+	padding-right: 0px;
 }
 
 #logo {
@@ -29,4 +31,13 @@ h3 {
 
 section {
 	width: 840px;
+}
+
+div #menu {
+	width: 840px;
+	margin: 0 auto;
+}
+
+a.button.menu {
+	margin-right: 0px;
 }
