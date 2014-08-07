@@ -43,3 +43,14 @@ a.button.menu {
 	width: 100px;
 	margin-right: 5px;
 }
+
+.input-group-addon {
+	padding: 6px 12px;
+	font-size: 14px;
+	font-weight: 100;
+	line-height: 1;
+	color: #555;
+	text-align: center;
+	background-color: transparent;
+	border: 0;
+}
