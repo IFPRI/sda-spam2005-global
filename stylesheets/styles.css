@@ -504,7 +504,7 @@ table {
 
 body {
   font: 14px/22px "Quattrocento Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #666;
+  color: #667;
   font-weight: 300;
   margin: 0px;
   padding: 0px 0 20px 0px;
@@ -534,7 +534,7 @@ h2 {
 }
 
 h3, h4, h5, h6 {
-  color: #666666;
+  color: #676767;
 }
 
 h3 {
@@ -550,7 +550,7 @@ a {
 
 a small {
   font-size: 11px;
-  color: #666;
+  color: #667;
   margin-top: -0.6em;
   display: block;
 }
@@ -844,7 +844,7 @@ nav ul li.tag-h2 + .tag-h1 {
   margin-top: 10px;
 }
 nav ul a {
-  color: #666;
+  color: #667;
 }
 nav ul a:hover {
   color: #999;

@@ -1,0 +1,32 @@
+h3 {
+	display: block;
+	font-size: 1.17em;
+	-webkit-margin-before: 1em;
+	-webkit-margin-after: 1em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	font-weight: bold;
+}
+
+#banner {
+	right: 0px;
+}
+
+#logo {
+	position: absolute;
+	margin: 0 auto;
+	height: 36px;
+	width: 36px;
+	right: 7px;
+	top: 7px;
+	display: block;
+	background: url(../images/hc_grey_transp.png);
+}
+
+.wrapper {
+	width: 840px;
+}
+
+section {
+	width: 840px;
+}
