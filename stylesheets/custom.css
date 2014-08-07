@@ -41,4 +41,5 @@ div #menu {
 a.button.menu {
 	margin-left: 0px !important;
 	width: 100px;
+	margin-right: 33px;
 }
