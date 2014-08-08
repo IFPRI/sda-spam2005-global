@@ -54,3 +54,10 @@ a.button.menu {
 	background-color: transparent;
 	border: 0;
 }
+
+.select2-container-multi .select2-choices .select2-search-choice {
+	border-radius: 0px;
+	border: 1px solid #e8e8e8;
+	background-clip: none;
+	line-height: 21px;
+}
