@@ -57,12 +57,29 @@
 
       <p>Select one variable - Harvested Area (Hectares), Physical Area (Hectares), Production (Tons), Yield (Kilograms / Hectare), one or more countries, crops and input systems, and download the dateset shaped into the selected format.</p>
 
-<div class="input-group">
-<span class="input-group-addon"><h3>Variable</h3></span>
-<input class="prettyCheckable form-control" value="option1" id="option1" data-label="Option 1" type="checkbox">
- <input class="prettyCheckable" value="option2" id="option2" data-label="Option 2" type="checkbox">
- <input class="prettyCheckable" value="option3" id="option3" data-label="Option 3" type="checkbox">
- <input class="prettyCheckable" value="option4" id="option4" data-label="Option 4" type="checkbox">
+<div class="input-elem-row">
+	<div class="labels-col">
+		<h3>Variable</h3>
+	</div>
+
+	<div class="btn-group btn-group-justified input-elems-col" data-toggle="buttons">
+
+	    <label class="btn btn-primary active"><input type="radio" name="options" id="yield" checked>Yield</label>
+		<label class="btn btn-primary"><input type="radio" name="options" id="harvested_area">Harvested Area</label>
+		<label class="btn btn-primary"><input type="radio" name="options" id="production">Production</label>
+		<label class="btn btn-primary"><input type="radio" name="options" id="physical_area">Physical Area</label>
+	</div>
+</div>
+
+<div class="labels-col">
+	<h3>Crops</h3>
+</div>
+
+<div class="input-elems-col">
+	<input class="prettyCheckable" value="option1" id="option1" data-label="Option 1" type="checkbox">
+	<input class="prettyCheckable" value="option2" id="option2" data-label="Option 2" type="checkbox">
+	<input class="prettyCheckable" value="option3" id="option3" data-label="Option 3" type="checkbox">
+	<input class="prettyCheckable" value="option4" id="option4" data-label="Option 4" type="checkbox">
 </div>
 
 <label for="crops"><h3>Crops</h3></label><select id="crops" multiple="multiple">
