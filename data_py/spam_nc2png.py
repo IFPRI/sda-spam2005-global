@@ -1,4 +1,5 @@
-
+import matplotlib
+matplotlib.use('Agg')
 from mpl_toolkits.basemap import Basemap
 from netCDF4 import *
 from matplotlib.colors import BoundaryNorm, Normalize
@@ -10,9 +11,7 @@ import pandas as pd
 from PIL import Image
 from netCDF4 import Dataset
 import numpy.ma as ma
-import matplotlib
 
-matplotlib.use('Agg')
 
 variableFolder = '/home/tmp/nc/quickstart_harvested/'
 #variableFolder = '/home/tmp/nc/quickstart_area/'
