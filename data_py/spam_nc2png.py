@@ -107,5 +107,5 @@ def plotCrop(variableFolder, crop):
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig('/home/tmp/png/' + parentFolder + '/' + crop + '.png', format='png', dpi=400)
 
-for crop in ('bana', 'barl'):
+for crop in ('whea', 'rice', 'maiz', 'barl', 'whea_i', 'rice_i', 'maiz_i', 'barl_i', 'whea_r', 'rice_r', 'maiz_r', 'barl_r'):
 	plotCrop(variableFolder, crop)
