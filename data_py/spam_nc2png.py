@@ -31,8 +31,18 @@ def plotCrop(variableFolder, crop, cropList):
 	df = pd.DataFrame(d2)
 	df = np.round(df,0)
 	
-	cat = pd.qcut(df, 7, retbins=True, precision = 1)
-	for i in range(0,8):
+	bins = 7
+	success = False
+
+	while not success:
+	    try:
+	        cat = pd.qcut(df, bins, retbins=True, precision = 1)
+	        success = True
+	    except ValueError:
+	    	bins = bins - 1
+	    	pass
+
+	for i in range(0,len(cat[1])):
 		if len(str(int(cat[1][i]))) >= 3: 
 			cat[1][i] = np.round(cat[1][i] * 0.01,0) / 0.01
 
@@ -89,7 +99,7 @@ def plotCrop(variableFolder, crop, cropList):
 	cbar.ax.set_xlabel(unitLabel, fontsize = 'x-small');
 
 	labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
-	labels[0] = '>0'; labels[7] = '>' + labels[6]
+	labels[0] = '>0'; labels[bins] = '>' + labels[bins - 1]
 	cbar.ax.set_xticklabels(labels)
 
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
