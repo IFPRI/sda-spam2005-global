@@ -108,4 +108,4 @@ def plotCrop(variableFolder, crop):
 	plt.savefig('/home/tmp/png/' + parentFolder + '/' + crop + '.png', format='png', dpi=400)
 
 for crop in ('bana', 'barl'):
-	plotCrop(variableFolder, crop, cropList)
+	plotCrop(variableFolder, crop)
