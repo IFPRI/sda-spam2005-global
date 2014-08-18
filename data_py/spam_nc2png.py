@@ -25,7 +25,7 @@ def plotCrop(variableFolder, crop):
 	lats = datafile.variables['lat'][:]
 	lons = datafile.variables['lon'][:]
 
-	d2 = ma.masked_where(data <= 0, data)
+	d2 = ma.masked_where(data <= 1, data)
 	df = pd.DataFrame(d2)
 	df = np.round(df,0)
 	
