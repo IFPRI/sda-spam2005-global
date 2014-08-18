@@ -12,18 +12,14 @@ from PIL import Image
 from netCDF4 import Dataset
 import numpy.ma as ma
 
-
-variableFolder = '/home/tmp/nc/quickstart_harvested/'
-#variableFolder = '/home/tmp/nc/quickstart_area/'
-#variableFolder = '/home/tmp/nc/quickstart_yield/'
-#variableFolder = '/home/tmp/nc/quickstart_prod/'
+variablePath  = '/home/tmp/nc/'
 
 #cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
 
 def plotCrop(variableFolder, crop):
 	filename = crop + '.tiff.nc'
-	datafile = Dataset(variableFolder + filename)
+	datafile = Dataset(variablePath + variableFolder + filename)
 
 	data = datafile.variables['Band1'][:]
 	lats = datafile.variables['lat'][:]
@@ -49,16 +45,16 @@ def plotCrop(variableFolder, crop):
 			cat[1][i] = np.round(cat[1][i] * 0.01,0) / 0.01
 
 	if 'harvested' in variableFolder: 
-		bmap = sequential.YlGnBu[7]; unitLabel = 'ha';
+		bmap = sequential.YlOrBr[bins]; unitLabel = 'ha';
 		parentFolder = 'quickstart_harvested'; variableName = 'Harvested Area';
 	if 'area' in variableFolder: 
-		bmap = sequential.YlGnBu[7]; unitLabel = 'ha';
+		bmap = sequential.Oranges[bins]; unitLabel = 'ha';
 		parentFolder = 'quickstart_area'; variableName = 'Physical Area';
 	if 'yield' in variableFolder: 
-		bmap = sequential.YlGnBu[7]; unitLabel = 'kg/ha';
+		bmap = sequential.YlGnBu[bins]; unitLabel = 'kg/ha';
 		parentFolder = 'quickstart_yield'; variableName = 'Yield';
 	if 'prod' in variableFolder: 
-		bmap = sequential.YlGnBu[7]; unitLabel = 'mt';
+		bmap = sequential.Greens[bins]; unitLabel = 'mt';
 		parentFolder = 'quickstart_prod'; variableName = 'Production';
 
 	cropArr = crop.split('_');
@@ -107,5 +103,6 @@ def plotCrop(variableFolder, crop):
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig('/home/tmp/png/' + parentFolder + '/' + crop + '.png', format='png', dpi=400)
 
-for crop in ('whea', 'rice', 'maiz', 'barl', 'whea_i', 'rice_i', 'maiz_i', 'barl_i', 'whea_r', 'rice_r', 'maiz_r', 'barl_r'):
-	plotCrop(variableFolder, crop)
+for variableFolder in ('quickstart_harvested/', 'quickstart_area/', 'quickstart_yield/', 'quickstart_prod/'):
+	for crop in ('whea', 'rice', 'maiz', 'barl', 'whea_i', 'rice_i', 'maiz_i', 'barl_i', 'whea_r', 'rice_r', 'maiz_r', 'barl_r'):
+		plotCrop(variableFolder, crop)
