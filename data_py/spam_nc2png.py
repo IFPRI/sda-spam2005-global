@@ -7,7 +7,7 @@ import numpy as np
 import gc, brewer2mpl
 from brewer2mpl import sequential
 import pandas as pd
-import Image
+from PIL import Image
 from netCDF4 import Dataset
 import numpy.ma as ma
 
@@ -16,7 +16,8 @@ variableFolder = '/home/tmp/nc/quickstart_harvested/'
 #variableFolder = '/home/tmp/nc/quickstart_yield/'
 #variableFolder = '/home/tmp/nc/quickstart_prod/'
 
-cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
+#cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
+cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
 
 for crop in ('bana', 'barl'):
 	plotCrop(variableFolder, crop, cropList)
