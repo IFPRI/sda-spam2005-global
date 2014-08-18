@@ -21,7 +21,7 @@ variableFolder = '/home/tmp/nc/quickstart_harvested/'
 #cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
 
-def plotCrop(variableFolder, crop, cropList):
+def plotCrop(variableFolder, crop):
 	filename = crop + '.tiff.nc'
 	datafile = Dataset(variableFolder + filename)
 
@@ -68,7 +68,7 @@ def plotCrop(variableFolder, crop, cropList):
 		if cropArr[1] == 'r': technologyName = 'Rainfed'
 		else: technologyName = 'Irrigated'
 
-	cropName = cropList[cropList['varCode'] == cropArr[0]].varName[1]
+	cropName = cropList[cropList['varCode'] == cropArr[0]].varName.values[0]
 
 	cmap = bmap.get_mpl_colormap(N=256)
 
