@@ -19,9 +19,6 @@ variableFolder = '/home/tmp/nc/quickstart_harvested/'
 #cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
 
-for crop in ('bana', 'barl'):
-	plotCrop(variableFolder, crop, cropList)
-
 def plotCrop(variableFolder, crop, cropList):
 	filename = crop + '.tiff.nc'
 	datafile = Dataset(variableFolder + filename)
@@ -98,3 +95,5 @@ def plotCrop(variableFolder, crop, cropList):
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig('/home/tmp/png/' + parentFolder + '/' + crop + '.png', format='png', dpi=400)
 
+for crop in ('bana', 'barl'):
+	plotCrop(variableFolder, crop, cropList)
