@@ -10,6 +10,7 @@ import pandas as pd
 from PIL import Image
 from netCDF4 import Dataset
 import numpy.ma as ma
+import matplotlib
 
 matplotlib.use('Agg')
 
