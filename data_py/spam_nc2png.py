@@ -11,6 +11,8 @@ from PIL import Image
 from netCDF4 import Dataset
 import numpy.ma as ma
 
+matplotlib.use('Agg')
+
 variableFolder = '/home/tmp/nc/quickstart_harvested/'
 #variableFolder = '/home/tmp/nc/quickstart_area/'
 #variableFolder = '/home/tmp/nc/quickstart_yield/'
@@ -73,7 +75,7 @@ def plotCrop(variableFolder, crop, cropList):
 	figTitle = cropName + ' ' + technologyName + ' ' + variableName + ' (' + unitLabel + ')' 
 
 	plt.close()
-	plt.figtext(0.035,0.92, figTitle, clip_on = 'True', size = 'large', weight = 'semibold'); 
+	plt.figtext(0.035,0.92, str(figTitle), clip_on = 'True', size = 'large', weight = 'semibold'); 
 	plt.figtext(0.035,0.87, 'Spatially disaggregated production statistics of circa 2005 using the Spatial Production Allocation Model (SPAM).', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
 	plt.figtext(0.035,0.845,'Values are for 5 arc-minute grid cells.', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
 
