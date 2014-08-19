@@ -43,16 +43,16 @@ def plotCrop(variableFolder, crop):
 			jc.bins[i] = np.round(jc.bins[i] / 50.0 ,0) * 50
 
 	if 'harvested' in variableFolder: 
-		bmap = sequential.YlOrBr[bins]; unitLabel = 'ha';
+		bmap = sequential.YlOrBr[7]; unitLabel = 'ha';
 		parentFolder = 'quickstart_harvested'; variableName = 'Harvested Area';
 	if 'area' in variableFolder: 
-		bmap = sequential.YlOrBr[bins]; unitLabel = 'ha';
+		bmap = sequential.YlOrBr[7]; unitLabel = 'ha';
 		parentFolder = 'quickstart_area'; variableName = 'Physical Area';
 	if 'yield' in variableFolder: 
-		bmap = sequential.YlGnBu[bins]; unitLabel = 'kg/ha';
+		bmap = sequential.YlGnBu[7]; unitLabel = 'kg/ha';
 		parentFolder = 'quickstart_yield'; variableName = 'Yield';
 	if 'prod' in variableFolder: 
-		bmap = sequential.YlGn[bins]; unitLabel = 'mt';
+		bmap = sequential.YlGn[7]; unitLabel = 'mt';
 		parentFolder = 'quickstart_prod'; variableName = 'Production';
 
 	cropArr = crop.split('_');
@@ -82,7 +82,7 @@ def plotCrop(variableFolder, crop):
 
 	map = Basemap(projection='merc',resolution='l', epsg=4326, lat_0 = 0, lon_0 = 20)
 	#map = Basemap(projection='merc',resolution='i', epsg=4326, llcrnrlon=-130, llcrnrlat=-75, urcrnrlon=185, urcrnrlat=80)
-	cs = map.pcolormesh(lons, lats, d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True))
+	cs = map.pcolormesh(lons, lats, d2, cmap=cmap, norm=BoundaryNorm(jc.bins, 256, clip=True))
 	map.drawlsmask(land_color='#f4f4f4')
 	# cs = map.pcolormesh(lons, lats, data, cmap=cmap, norm=Normalize(vmin=data.min(), vmax=data.max(), clip=True))
 
@@ -95,7 +95,7 @@ def plotCrop(variableFolder, crop):
 	cbar.ax.set_xlabel(unitLabel, fontsize = 'x-small');
 
 	labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
-	labels[0] = '>0'; labels[bins] = '>' + labels[bins - 1]
+	labels[0] = '>0'; labels[7] = '>' + labels[6]
 	cbar.ax.set_xticklabels(labels)
 
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
