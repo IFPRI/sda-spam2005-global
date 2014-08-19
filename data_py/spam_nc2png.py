@@ -34,13 +34,13 @@ def plotCrop(variableFolder, crop):
 		s = s.append(pd.Series(df[col]))
 
 	s_one = s[~np.isnan(s)]
-	
+	if len(s_one) == 0 : return
+
 	jc = br.Jenks_Caspall(s_one, k = 8)
 
-	bins = []
 	for i in range(0,len(jc.bins)):
-		if len(str(int(jc.bins[i]))) >= 3: 
-			bins[i] = np.round(jc.bins[i] / 50.0 ,0) * 50
+		if len(str(int(jc.bins[i]))) >= 2: 
+			jc.bins[i] = np.round(jc.bins[i] / 50.0 ,0) * 50
 
 	if 'harvested' in variableFolder: 
 		bmap = sequential.YlOrBr[bins]; unitLabel = 'ha';
