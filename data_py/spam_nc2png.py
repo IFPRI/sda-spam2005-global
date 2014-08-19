@@ -39,8 +39,8 @@ def plotCrop(variableFolder, crop):
 	jc = br.Jenks_Caspall(s_one, k = 8)
 
 	for i in range(0,len(jc.bins)):
-		if len(str(int(jc.bins[i]))) >= 2: 
-			jc.bins[i] = np.round(jc.bins[i] / 50.0 ,0) * 50
+		if len(str(int(jc.bins[i]))) >= 3: 
+			jc.bins[i] = np.round(jc.bins[i] / 100.0 ,0) * 100
 
 	if 'harvested' in variableFolder: 
 		bmap = sequential.YlOrBr[7]; unitLabel = 'ha';
@@ -91,11 +91,10 @@ def plotCrop(variableFolder, crop):
 
 	cbar = map.colorbar(cs,location='bottom', pad='3%')
 
-
-	cbar.ax.set_xlabel(unitLabel, fontsize = 'x-small');
+	#cbar.ax.set_xlabel(unitLabel, fontsize = 'x-small');
 
 	labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
-	labels[0] = '>0'; labels[7] = '>' + labels[6]
+	labels[0] = '1'; labels[6] = labels[6] + ' <'; labels[7] = ''
 	cbar.ax.set_xticklabels(labels)
 
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
@@ -103,5 +102,5 @@ def plotCrop(variableFolder, crop):
 
 for variableFolder in ('quickstart_harvested/', 'quickstart_area/', 'quickstart_yield/', 'quickstart_prod/'):
 	#for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest', 'whea_i', 'rice_i', 'maiz_i', 'barl_i', 'pmil_i', 'smil_i', 'sorg_i', 'ocer_i', 'pota_i', 'swpo_i', 'yams_i', 'cass_i', 'orts_i', 'bean_i', 'chic_i', 'cowp_i', 'pige_i', 'lent_i', 'opul_i', 'soyb_i', 'grou_i', 'cnut_i', 'oilp_i', 'sunf_i', 'rape_i', 'sesa_i', 'ooil_i', 'sugc_i', 'sugb_i', 'cott_i', 'ofib_i', 'acof_i', 'rcof_i', 'coco_i', 'teas_i', 'toba_i', 'bana_i', 'plnt_i', 'trof_i', 'temf_i', 'vege_i', 'rest_i', 'whea_r', 'rice_r', 'maiz_r', 'barl_r', 'pmil_r', 'smil_r', 'sorg_r', 'ocer_r', 'pota_r', 'swpo_r', 'yams_r', 'cass_r', 'orts_r', 'bean_r', 'chic_r', 'cowp_r', 'pige_r', 'lent_r', 'opul_r', 'soyb_r', 'grou_r', 'cnut_r', 'oilp_r', 'sunf_r', 'rape_r', 'sesa_r', 'ooil_r', 'sugc_r', 'sugb_r', 'cott_r', 'ofib_r', 'acof_r', 'rcof_r', 'coco_r', 'teas_r', 'toba_r', 'bana_r', 'plnt_r', 'trof_r', 'temf_r', 'vege_r', 'rest_r'):
-	for crop in ('whea', 'rice', 'maiz', 'whea_i', 'rice_i', 'maiz_i', 'whea_r', 'rice_r', 'maiz_r'):
+	for crop in ('whea'):
 		plotCrop(variableFolder, crop)
