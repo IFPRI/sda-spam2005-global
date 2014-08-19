@@ -31,7 +31,7 @@ def plotCrop(variableFolder, crop):
 
 	s = pd.Series()
 	for col in df.columns:
-    	s = s.append(pd.Series(df[col]))
+		s = s.append(pd.Series(df[col]))
 
 	s_one = s[~np.isnan(s)]
 	
