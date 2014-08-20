@@ -84,7 +84,7 @@ def plotCrop(variableFolder, crop):
 	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20)
 	#map = Basemap(projection='merc',resolution='i', epsg=4326, llcrnrlon=-130, llcrnrlat=-75, urcrnrlon=185, urcrnrlat=80)
 	cs = map.pcolormesh(lons, lats, d2, cmap=cmap, norm=BoundaryNorm(jc.bins, 256, clip=True))
-	map.drawlsmask(land_color='#f8f8f8')
+	map.drawlsmask(land_color='#fafafa')
 	
 	map.drawcountries(linewidth=0.05)
 	map.drawcoastlines(linewidth=0.05)
