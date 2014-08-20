@@ -36,6 +36,10 @@ def plotCrop(variableFolder, crop):
 	s_one = s[~np.isnan(s)]
 	if len(s_one) == 0 : return
 
+	if (crop == 'orts_i' and variableFolder == 'yield'): 
+		print 'Skip orts_i for yield';
+		return
+
 	jc = br.Jenks_Caspall(s_one, k = 8)
 
 	for i in range(0,len(jc.bins)):
