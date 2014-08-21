@@ -12,18 +12,18 @@ from netCDF4 import Dataset
 import numpy.ma as ma
 import pysal.esda.mapclassify as br
 
-variablePath  = '/home/tmp/nc/'
-#variablePath = '/Users/maria/Downloads/'
+#variablePath  = '/home/tmp/nc/'
+variablePath = '/Users/maria/Downloads/'
 
-cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
-#cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
+#cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
+cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 
 def plotCrop(variableFolder, crop):
 	print crop
 	filename = crop + '.tiff.nc'
 	
-	datafile = Dataset(variablePath + variableFolder + filename)
-	#datafile = Dataset(variablePath + filename)
+	#datafile = Dataset(variablePath + variableFolder + filename)
+	datafile = Dataset(variablePath + filename)
 
 	data = datafile.variables['Band1'][:]
 	lats = datafile.variables['lat'][:]
@@ -35,10 +35,6 @@ def plotCrop(variableFolder, crop):
 	s = df.unstack()
 	s_one = s[~np.isnan(s)]
 	if len(s_one) == 0 : return
-
-	if (crop == 'orts_i' and variableFolder == 'yield'): 
-		print 'Skip orts_i for yield';
-		return
 
 	jc = br.Jenks_Caspall(s_one, k = 8)
 
@@ -74,8 +70,8 @@ def plotCrop(variableFolder, crop):
 
 	plt.close()
 	plt.figtext(0.025,0.92, figTitle, clip_on = 'True', size = 'large', weight = 'semibold'); 
-	plt.figtext(0.025,0.88,'Spatially disaggregated production statistics of circa 2005 using the Spatial Production Allocation Model (SPAM).', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
-	plt.figtext(0.025,0.855,'Values are for 5 arc-minute grid cells.', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
+	plt.figtext(0.025,0.86,'Spatially disaggregated production statistics of circa 2005 using the Spatial Production Allocation Model (SPAM).', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
+	plt.figtext(0.025,0.835,'Values are for 5 arc-minute grid cells.', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
 
 	plt.figtext(0.025,0.072, 'You, L., U. Wood-Sichra, S. Fritz, Z. Guo, L. See, and J. Koo. 2014', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
 	plt.figtext(0.025,0.051, 'Spatial Production Allocation Model (SPAM) 2005 Beta Version.', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
@@ -85,10 +81,10 @@ def plotCrop(variableFolder, crop):
 	#logos = Image.open('/Users/maria/Projects/tests/results/spam_logos2.png')
 	plt.figimage(logos,1830, 100)
 
-	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20)
-	#map = Basemap(projection='merc',resolution='i', epsg=4326, llcrnrlon=-130, llcrnrlat=-75, urcrnrlon=185, urcrnrlat=80)
+	#map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20)
+	map = Basemap(projection='merc',resolution='l', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
 	cs = map.pcolormesh(lons, lats, d2, cmap=cmap, norm=BoundaryNorm(jc.bins, 256, clip=True))
-	map.drawlsmask(land_color='#fafafa')
+	map.drawlsmask(land_color='#fafafa', lakes = True)
 	
 	map.drawcountries(linewidth=0.05)
 	map.drawcoastlines(linewidth=0.05)
