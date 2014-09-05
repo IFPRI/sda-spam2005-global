@@ -10,7 +10,7 @@ from rest_framework import viewsets, views, generics, filters
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework_csv.renderers import CSVRenderer, BaseRenderer
 from six import StringIO, text_type
-import csv
+import csv, os, numpy, tempfile, zipfile
 import json
 try:
     from six import PY2
@@ -23,8 +23,9 @@ from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.utils.datastructures import SortedDict
 from django.utils.six.moves import range
 
-from osgeo import gdal_array, gdal
-import numpy
+from django.http import HttpResponse
+from django.core.servers.basehttp import FileWrapper
+
 
 class RouterView(object):
     def __init__(self):
@@ -210,6 +211,24 @@ class YieldViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
 
+
+def send_file(request): # Select your file here.  
+    temp = tempfile.TemporaryFile()
+    archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
+    for index in range(2):
+        filename = __file__ # Select your files here.                           
+        archive.write(filename, 'file%d.txt' % index)
+    archive.close()
+    wrapper = FileWrapper(temp)
+    response = HttpResponse(wrapper, content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=test.zip'
+    response['Content-Length'] = temp.tell()
+    temp.seek(0)
+
+    content = YieldAllViewSet.retrieve()
+
+    return temp
+
 class GeoTIFFRenderer(BaseRenderer):
     media_type = 'image/tiff'
     format = 'geotiff'
@@ -218,11 +237,21 @@ class GeoTIFFRenderer(BaseRenderer):
     headers = None
 
     def render(self, data, media_type=None, renderer_context=None):
-        ndata = numpy.array(data)
-        src = gdal_array.OpenArray(ndata)
-        band = src.GetRasterBand(0)
-        data = band.ReadAsArray()
-        return data
+        #Ny, Nx = data.shape
+        data = numpy.arange(25).reshape((5, 5))
+        driver = gdal.GetDriverByName("GTiff")
+        
+        ds = driver.Create('output.tif', 5, 5, 1, gdal.GDT_Byte, ['COMPRESS=LZW'])
+
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+        ds.SetProjection(srs.ExportToWkt())
+        #ds.SetGeoTransform( ... ) # define GeoTransform tuple
+        ds.GetRasterBand(1).WriteArray(data)
+        #ds = None
+        return ds
+        
+        
 
 class YieldAllViewSet(viewsets.ModelViewSet):
     """

@@ -1,4 +1,6 @@
-from django.db import models
+#from django.db import models
+from django.contrib.gis.db import models
+
 
 # Create your models here.
 class Area(models.Model):
@@ -454,6 +456,7 @@ class Yield(models.Model):
 	x = models.FloatField()
 	y = models.FloatField()
 	hc_seq5m = models.FloatField()
+	wkb_geometry = models.PolygonField()
 
 class Prod(models.Model):
 	iso3 = models.CharField(max_length=8, null = True)

@@ -6,12 +6,13 @@ from rest_framework import routers
 from quickstart import views
 
 from django.http import HttpResponse
-from quickstart.views import RouterView, some_view, some_streaming_csv_view
+from quickstart.views import RouterView, some_view, some_streaming_csv_view, send_file
 
 routerRaw = RouterView()
 routerRaw.register(
 	(r'^foo/test', some_view),
     (r'^foo/area_all', some_streaming_csv_view),
+    (r'^foo/download', send_file),
 )
 
 router = routers.DefaultRouter()
