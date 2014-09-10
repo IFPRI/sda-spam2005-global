@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'quickstart',
     'autocomplete_light',
     'rest_framework_gis',
+#    'rest_pandas',
 )
 
 MIDDLEWARE_CLASSES = (

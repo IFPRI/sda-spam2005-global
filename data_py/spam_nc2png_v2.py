@@ -77,6 +77,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	plt.figimage(logos,1830, 100)
 
 	#map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20) # includes all Antarctica
+	#kav7
 	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
 	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True))
 	map.drawlsmask(land_color='#fafafa', lakes = True)
