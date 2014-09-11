@@ -65,90 +65,138 @@ class CustomPaginatedCSVRenderer(CSVRenderer):
 
         return csv_buffer.getvalue()
 
-def send_file(request): # Select your file here.  
-    temp = tempfile.TemporaryFile()
-    archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
-    for index in range(2):
-        filename = __file__ # Select your files here.                           
-        archive.write(filename, 'file%d.txt' % index)
-    archive.close()
-    wrapper = FileWrapper(temp)
-    response = HttpResponse(wrapper, content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename=test.zip'
-    response['Content-Length'] = temp.tell()
-    temp.seek(0)
+def createShapefile(data, filename, fields):
+    charset = 'utf-8'
+    outShapefile = filename +'.shp'
+        
+    driver_ogr = ogr.GetDriverByName('ESRI Shapefile'.encode('utf-8'))
+        
+    if os.path.exists(filename +'.shp'):
+        driver_ogr.DeleteDataSource(filename +'.shp'.encode('utf-8'))
 
-    content = YieldAllViewSet.retrieve()
+    ds_ogr = driver_ogr.CreateDataSource(filename +'.shp'.encode('utf-8'))
 
-    return temp
+    srs = osr.SpatialReference()
+    srs.ImportFromEPSG(4326)
+
+    layer = ds_ogr.CreateLayer(filename.encode('utf-8'), srs, geom_type = ogr.wkbPolygon)
+    print fields
+    for field in fields:
+        if (field != 'wkb_geometry'):
+            fieldDefn=ogr.FieldDefn(field.encode('utf-8'), ogr.OFTReal)
+            layer.CreateField(fieldDefn)
+        
+    featureDefn = layer.GetLayerDefn()
+    geomcol =  ogr.Geometry(ogr.wkbGeometryCollection)
+
+    for i in data['results']:
+        poly = ogr.CreateGeometryFromWkt(i['wkb_geometry'])
+        geomcol.AddGeometry(poly)
+        feature = ogr.Feature(featureDefn)
+        feature.SetGeometry(poly)
+        for field in fields:
+            if (field != 'wkb_geometry'):
+                feature.SetField(field.encode('utf-8'), i[field])
+        layer.CreateFeature(feature)
+            
+        poly.Destroy()
+        feature.Destroy()
+
+    ds_ogr.Destroy()
+
+def createGeoTIFF(data, filename, field):
+    pixel_size = 0.08333333
+    NoData_value = -9999
+
+    # Filename of input Shapefile
+    vector_fn = filename + '.shp'.encode('utf-8')
+
+    # Filename of the raster Tiff that will be created
+    raster_fn = filename + '.tif'.encode('utf-8')
+
+    # Open the data source and read in the extent
+    source_ds = ogr.Open(vector_fn)
+    source_layer = source_ds.GetLayer()
+    source_srs = source_layer.GetSpatialRef()
+    x_min, x_max, y_min, y_max = source_layer.GetExtent()
+
+    # Create the destination data source
+    x_res = int((x_max - x_min) / pixel_size)
+    y_res = int((y_max - y_min) / pixel_size)
+    target_ds = gdal.GetDriverByName('GTiff'.encode('utf-8')).Create(raster_fn, x_res, y_res, 1, gdal.GDT_Float32)
+    target_ds.SetGeoTransform((x_min, pixel_size, 0, y_max, 0, -pixel_size))
+    target_ds.SetProjection(source_srs.ExportToWkt())
+
+    band = target_ds.GetRasterBand(1)
+    band.SetNoDataValue(NoData_value)
+    # Rasterize
+    gdal.RasterizeLayer(target_ds, [1], source_layer, burn_values=[0], options=["ATTRIBUTE=%s" % field.encode('utf-8')])    
+
+def buildFileName(fields, iso3s, variable):
+    filename = 'spam2005_' + variable + '_'
+    print fields
+    filename = filename + fields.replace(',','_').replace('wkb_geometry','').strip('_')
+    filename = filename + '_' + iso3s.replace(',','_').strip('_')
+    return filename
+
+class ShapefileRenderer(BaseRenderer):
+    media_type = 'application/zip'
+    format = 'zip'
+    charset = 'utf-8'
+    render_style = 'binary'
+    headers = None 
+
+    def render(self, data, media_type=None, renderer_context=None):
+        filename = buildFileName(renderer_context.get('request').QUERY_PARAMS.get('fields'), renderer_context.get('request').QUERY_PARAMS.get('iso3'), renderer_context.get('view').fileslug)
+        fields = renderer_context.get('request').QUERY_PARAMS.get('fields').split(',')
+        createShapefile(data, filename, fields)
+
+        temp = tempfile.TemporaryFile()
+        archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
+        archive.write(filename +'.shp', filename +'.shp')
+        archive.write(filename +'.shx', filename +'.shx')
+        archive.write(filename +'.prj', filename +'.prj')
+        archive.write(filename +'.dbf', filename +'.dbf')
+        archive.close()
+        temp.seek(0)
+        return StreamingHttpResponse(temp)
 
 class GeoTIFFRenderer(BaseRenderer):
     media_type = 'image/tiff'
     format = 'geotiff'
-    charset = None
+    charset = 'utf-8'
     render_style = 'binary'
     headers = None
 
     def render(self, data, media_type=None, renderer_context=None):
+        fileslug = renderer_context.get('view').fileslug
         
-        outShapefile = 'test.shp'.encode('utf-8')
+        filename_all = buildFileName(renderer_context.get('request').QUERY_PARAMS.get('fields'), renderer_context.get('request').QUERY_PARAMS.get('iso3'), fileslug)
+        fields = renderer_context.get('request').QUERY_PARAMS.get('fields').split(',')
+        iso3s = renderer_context.get('request').QUERY_PARAMS.get('iso3').split(',')
         
-        driver_ogr = ogr.GetDriverByName('ESRI Shapefile'.encode('utf-8'))
-        
-        if os.path.exists('test.shp'.encode('utf-8')):
-            driver_ogr.DeleteDataSource('test.shp'.encode('utf-8'))
+        temp = tempfile.TemporaryFile()
+        archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
+        print fields
+        for field in fields:
+            if (field != 'wkb_geometry'):
+                for iso3 in iso3s:
+                    filename = buildFileName(field, iso3, fileslug)
+                    f = list()
+                    f.append(field)
+                    createShapefile(data, filename, f)
+                    createGeoTIFF(data, filename, field)
+                    archive.write(filename +'.tif', filename +'.tif')
+        archive.close()
+        temp.seek(0)
+        return StreamingHttpResponse(temp)
 
-        ds_ogr = driver_ogr.CreateDataSource('test.shp'.encode('utf-8'))
-
-        srs = osr.SpatialReference()
-        srs.ImportFromEPSG(4326)
-
-        layer = ds_ogr.CreateLayer('test'.encode('utf-8'), srs, geom_type = ogr.wkbPolygon)
-        fieldDefn=ogr.FieldDefn('maiz'.encode('utf-8'), ogr.OFTReal)
-        layer.CreateField(fieldDefn)
-        
-        featureDefn = layer.GetLayerDefn()
-        geomcol =  ogr.Geometry(ogr.wkbGeometryCollection)
-
-        for i in data['results']:
-            poly = ogr.CreateGeometryFromWkt(i['wkb_geometry'])
-            geomcol.AddGeometry(poly)
-            feature = ogr.Feature(featureDefn)
-            feature.SetGeometry(poly)
-            feature.SetField('maiz'.encode('utf-8'), i['maiz'])
-            layer.CreateFeature(feature)
-            
-            poly.Destroy()
-            feature.Destroy()
-
-        ds_ogr.Destroy()
-
-        pixel_size = 0.08333333
-        NoData_value = -9999
-
-        # Filename of input OGR file
-        vector_fn = 'test.shp'.encode('utf-8')
-
-        # Filename of the raster Tiff that will be created
-        raster_fn = 'test.tif'.encode('utf-8')
-
-        # Open the data source and read in the extent
-        source_ds = ogr.Open(vector_fn)
-        source_layer = source_ds.GetLayer()
-        source_srs = source_layer.GetSpatialRef()
-        x_min, x_max, y_min, y_max = source_layer.GetExtent()
-
-        # Create the destination data source
-        x_res = int((x_max - x_min) / pixel_size)
-        y_res = int((y_max - y_min) / pixel_size)
-        target_ds = gdal.GetDriverByName('GTiff'.encode('utf-8')).Create(raster_fn, x_res, y_res, 1, gdal.GDT_Float32)
-        target_ds.SetGeoTransform((x_min, pixel_size, 0, y_max, 0, -pixel_size))
-        target_ds.SetProjection(source_srs.ExportToWkt())
-
-        band = target_ds.GetRasterBand(1)
-        band.SetNoDataValue(NoData_value)
-        # Rasterize
-        gdal.RasterizeLayer(target_ds, [1], source_layer, burn_values=[0], options=["ATTRIBUTE=%s" % 'maiz'.encode('utf-8')])
+class ImageRenderer(BaseRenderer):
+    media_type = 'image/tiff'
+    format = 'geotiff'
+    charset = 'utf-8'
+    render_style = 'binary'
+    headers = None
 
 class YieldViewSet(viewsets.ModelViewSet):
     """
@@ -158,15 +206,24 @@ class YieldViewSet(viewsets.ModelViewSet):
     serializer_class = YieldSerializer
 
     paginate_by = 20
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer, GeoTIFFRenderer)
-
+    fileslug = 'yield'
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
     def get_queryset(self):
+        
         queryset = Yield.objects.all()
         iso3 = self.request.QUERY_PARAMS.get('iso3', None)
         if iso3 is not None:
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
+
+    # set filename
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        if response.accepted_renderer.format == 'zip' or response.accepted_renderer.format == 'geotiff':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        return response
 
 class CustomCSVRenderer(CSVRenderer):
 
