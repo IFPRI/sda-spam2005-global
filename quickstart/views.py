@@ -67,7 +67,7 @@ class CustomPaginatedCSVRenderer(CSVRenderer):
 
 def createShapefile(data, filename, fields):
     charset = 'utf-8'
-    outShapefile = filename +'.shp'
+    outShapefile = 'build/' + filename +'.shp'
         
     driver_ogr = ogr.GetDriverByName('ESRI Shapefile'.encode('utf-8'))
         
@@ -89,7 +89,8 @@ def createShapefile(data, filename, fields):
     featureDefn = layer.GetLayerDefn()
     geomcol =  ogr.Geometry(ogr.wkbGeometryCollection)
 
-    for i in data['results']:
+    # for i in data['results']: # this is for paginated response
+    for i in data:
         poly = ogr.CreateGeometryFromWkt(i['wkb_geometry'])
         geomcol.AddGeometry(poly)
         feature = ogr.Feature(featureDefn)
@@ -141,7 +142,7 @@ def buildFileName(fields, iso3s, variable):
 
 class ShapefileRenderer(BaseRenderer):
     media_type = 'application/zip'
-    format = 'zip'
+    format = 'shapefile'
     charset = 'utf-8'
     render_style = 'binary'
     headers = None 
@@ -179,7 +180,7 @@ class GeoTIFFRenderer(BaseRenderer):
         archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
         print fields
         for field in fields:
-            if (field != 'wkb_geometry'):
+            if (field != 'wkb_geometry' and field != 'unit'):
                 for iso3 in iso3s:
                     filename = buildFileName(field, iso3, fileslug)
                     f = list()
@@ -197,33 +198,7 @@ class ImageRenderer(BaseRenderer):
     charset = 'utf-8'
     render_style = 'binary'
     headers = None
-
-class YieldViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows yields to be viewed or edited.
-    """
-    queryset = Yield.objects.all()
-    serializer_class = YieldSerializer
-
-    paginate_by = 20
-    fileslug = 'yield'
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
-    def get_queryset(self):
-        
-        queryset = Yield.objects.all()
-        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
-        if iso3 is not None:
-            iso3 = iso3.split(',')
-            queryset = queryset.filter(iso3__in=iso3)
-        return queryset
-
-    # set filename
-    def finalize_response(self, request, response, *args, **kwargs):
-        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
-        if response.accepted_renderer.format == 'zip' or response.accepted_renderer.format == 'geotiff':
-            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
-            response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
-        return response
+    # to be continued
 
 class CustomCSVRenderer(CSVRenderer):
 
@@ -255,14 +230,41 @@ class CustomCSVRenderer(CSVRenderer):
 
         return csv_buffer.getvalue()
 
-'''class YieldAllViewSet(viewsets.ModelViewSet):
+class YieldViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows yields to be viewed or edited.
     """
     queryset = Yield.objects.all()
     serializer_class = YieldSerializer
+
     paginate_by = None
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, GeoTIFFRenderer)
+    fileslug = 'yield'
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
+    def get_queryset(self):
+        
+        queryset = Yield.objects.all()
+        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
+        if iso3 is not None:
+            iso3 = iso3.split(',')
+            queryset = queryset.filter(iso3__in=iso3)
+        return queryset
+
+    # set filename
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        return response
+
+class YieldPaginatedViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows yields to be viewed or edited.
+    """
+    queryset = Yield.objects.all()
+    serializer_class = YieldSerializer
+    paginate_by = 20
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
 
     def get_queryset(self):
         queryset = Yield.objects.all()
@@ -270,7 +272,7 @@ class CustomCSVRenderer(CSVRenderer):
         if iso3 is not None:
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
-        return queryset'''
+        return queryset
 
 class AreaViewSet(viewsets.ModelViewSet):
     """
@@ -279,25 +281,34 @@ class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
 
-    paginate_by = 20
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
-
+    paginate_by = None
+    fileslug = 'physical_area'
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
     def get_queryset(self):
-        queryset = Area.objects.all()
+        
+        queryset = Yield.objects.all()
         iso3 = self.request.QUERY_PARAMS.get('iso3', None)
         if iso3 is not None:
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
-    
-class AreaAllViewSet(viewsets.ModelViewSet):
+
+    # set filename
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        return response
+
+class AreaPaginatedViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows yields to be viewed or edited.
     """
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
-    paginate_by = None
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer)
+    paginate_by = 20
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
 
     def get_queryset(self):
         queryset = Area.objects.all()
@@ -314,25 +325,35 @@ class ProdViewSet(viewsets.ModelViewSet):
     queryset = Prod.objects.all()
     serializer_class = ProdSerializer
 
-    paginate_by = 20
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
-
+    paginate_by = None
+    fileslug = 'production'
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
     def get_queryset(self):
-        queryset = Prod.objects.all()
+        
+        queryset = Yield.objects.all()
         iso3 = self.request.QUERY_PARAMS.get('iso3', None)
         if iso3 is not None:
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
+
+    # set filename
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        return response
+
     
-class ProdAllViewSet(viewsets.ModelViewSet):
+class ProdPaginatedViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows yields to be viewed or edited.
     """
     queryset = Prod.objects.all()
     serializer_class = ProdSerializer
-    paginate_by = None
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer)
+    paginate_by = 20
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
 
     def get_queryset(self):
         queryset = Prod.objects.all()
@@ -349,6 +370,32 @@ class HarvestedViewSet(viewsets.ModelViewSet):
     queryset = Harvested.objects.all()
     serializer_class = HarvestedSerializer
 
+    paginate_by = None
+    fileslug = 'harvested_area'
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
+    def get_queryset(self):
+        
+        queryset = Yield.objects.all()
+        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
+        if iso3 is not None:
+            iso3 = iso3.split(',')
+            queryset = queryset.filter(iso3__in=iso3)
+        return queryset
+
+    # set filename
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        return response
+
+class HarvestedPaginatedViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows yields to be viewed or edited.
+    """
+    queryset = Harvested.objects.all()
+    serializer_class = HarvestedSerializer
     paginate_by = 20
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomPaginatedCSVRenderer)
 
@@ -359,84 +406,8 @@ class HarvestedViewSet(viewsets.ModelViewSet):
             iso3 = iso3.split(',')
             queryset = queryset.filter(iso3__in=iso3)
         return queryset
-    
-class HarvestedAllViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows yields to be viewed or edited.
-    """
-    queryset = Harvested.objects.all()
-    serializer_class = HarvestedSerializer
-    paginate_by = None
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer)
 
-    def get_queryset(self):
-        queryset = Harvested.objects.all()
-        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
-        if iso3 is not None:
-            iso3 = iso3.split(',')
-            queryset = queryset.filter(iso3__in=iso3)
-        return queryset
-
-'''class RouterView(object):
-    def __init__(self):
-        self.mapping = SortedDict()
-
-    def register(self, *args):
-        for regex, view_func in args:
-            self.mapping[re.compile(regex)] = view_func
-
-    def __call__(self, request, *args, **kwargs):
-        for regex, view_func in self.mapping.items():
-            if regex.match(request.path[1:]):
-                return view_func(request, *args, **kwargs)
-        # does not match
-        raise Http404
-
-def some_view(request):
-    return HttpResponse('test')
-
-class Echo(object):
-    """An object that implements just the write method of the file-like
-    interface.
-    """
-    def write(self, value):
-        """Write the value by returning it, instead of storing in a buffer."""
-        return value
-
-def some_streaming_csv_view(request):
-    """A view that streams a large CSV file."""
-    # Generate a sequence of rows. The range is based on the maximum number of
-    # rows that can be handled by a single sheet in most spreadsheet
-    # applications.
-    queryset = Area.objects.all()
-    rows = (["Row {0}".format(idx), str(idx)] for idx in range(65536))
-    rows = queryset
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
-                                     content_type="text/csv")
-    response['Content-Disposition'] = 'attachment; filename="export.csv"'
-    return response
-
-class TestViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows yields to be viewed or edited.
-    """
-    queryset = Area.objects.all()
-    serializer_class = AreaSerializer
-
-    paginate_by = 20
-    renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
-
-    def get_queryset(self):
-        queryset = Area.objects.all()
-        iso3 = self.request.QUERY_PARAMS.get('iso3', None)
-        if iso3 is not None:
-            iso3 = iso3.split(',')
-            queryset = queryset.filter(iso3__in=iso3)
-        return queryset
-
-class UserViewSet(viewsets.ModelViewSet):
+'''class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
