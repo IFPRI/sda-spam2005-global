@@ -65,9 +65,11 @@ class CustomPaginatedCSVRenderer(CSVRenderer):
 
         return csv_buffer.getvalue()
 
+allowedCrops = ['maiz', 'maiz_r', 'wkb_geometry']
+
 def createShapefile(data, filename, fields):
     charset = 'utf-8'
-    outShapefile = 'build/' + filename +'.shp'
+    outShapefile = filename +'.shp'
         
     driver_ogr = ogr.GetDriverByName('ESRI Shapefile'.encode('utf-8'))
         
@@ -80,7 +82,7 @@ def createShapefile(data, filename, fields):
     srs.ImportFromEPSG(4326)
 
     layer = ds_ogr.CreateLayer(filename.encode('utf-8'), srs, geom_type = ogr.wkbPolygon)
-    print fields
+
     for field in fields:
         if (field != 'wkb_geometry'):
             fieldDefn=ogr.FieldDefn(field.encode('utf-8'), ogr.OFTReal)
@@ -95,9 +97,14 @@ def createShapefile(data, filename, fields):
         geomcol.AddGeometry(poly)
         feature = ogr.Feature(featureDefn)
         feature.SetGeometry(poly)
+
+        feature.SetField('iso3'.encode('utf-8'), i['iso3'])
+        feature.SetField('cell5m'.encode('utf-8'), i['cell5m'])
+        feature.SetField('unit'.encode('utf-8'), i['unit'])
         for field in fields:
-            if (field != 'wkb_geometry'):
+            if ((field in allowedCrops) == True):
                 feature.SetField(field.encode('utf-8'), i[field])
+
         layer.CreateFeature(feature)
             
         poly.Destroy()
@@ -134,9 +141,10 @@ def createGeoTIFF(data, filename, field):
     gdal.RasterizeLayer(target_ds, [1], source_layer, burn_values=[0], options=["ATTRIBUTE=%s" % field.encode('utf-8')])    
 
 def buildFileName(fields, iso3s, variable):
-    filename = 'spam2005_' + variable + '_'
-    print fields
-    filename = filename + fields.replace(',','_').replace('wkb_geometry','').strip('_')
+    filename = 'spam2005_' + variable
+    for field in fields:
+        if ((field in allowedCrops) == True):
+            filename = filename + '_' + field
     filename = filename + '_' + iso3s.replace(',','_').strip('_')
     return filename
 
@@ -180,8 +188,8 @@ class GeoTIFFRenderer(BaseRenderer):
         archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
         print fields
         for field in fields:
-            if (field != 'wkb_geometry' and field != 'unit'):
-                for iso3 in iso3s:
+            for iso3 in iso3s:
+                if ((field in allowedCrops) == True and field != 'wkb_geometry'):
                     filename = buildFileName(field, iso3, fileslug)
                     f = list()
                     f.append(field)
@@ -420,3 +428,5 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer'''
+
+
