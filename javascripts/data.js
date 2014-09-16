@@ -3,10 +3,19 @@ console.log('This would be the main JS file.');
 jQuery(document).ready(function( $ ) {
 	$('.btn').button();
 	// Retrieve country list
-	$.getJSON("countries.json", function(data) {
+	//<optgroup label="group 1">
+	$.getJSON("countries_Europe.json", function(data) {
 		$.each(data, function(i, item) {
 			var newOption = $('<option/>');
-			newOption.html(item['adm0_name']);
+			newOption.html(item['name_cntr']);
+			newOption.attr('value', item['iso3']);
+			$("#countries").append(newOption);
+		});
+
+	$.getJSON("countries_Asia.json", function(data) {
+		$.each(data, function(i, item) {
+			var newOption = $('<option/>');
+			newOption.html(item['name_cntr']);
 			newOption.attr('value', item['iso3']);
 			$("#countries").append(newOption);
 		});
@@ -113,5 +122,3 @@ jQuery(document).ready(function( $ ) {
   	});
 });
 //http://api.mapspam.info/yield/?page=1&iso3=MWI,GHA&fields=iso3,x,y,prod_level,cell5m,unit,whea&format=csv
-
-// http://harvestchoice.cartodb.com/api/v2/sql?q=select%20varcode,%20varlabel,%20published,%20tbname%20from%20vi%20where%20position(%27cell5m_spam%27%20in%20tbname)%20=0%20and%20published%20=%20%271%27%20order%20by%20varlabel&api_key=4e78c23fe0c7a1263a87cc9261df1bca228daac0
