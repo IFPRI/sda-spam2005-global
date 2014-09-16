@@ -273,9 +273,12 @@ class YieldViewSet(viewsets.ModelViewSet):
     # set filename
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
-        if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
+        if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff' :
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'yield')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        if response.accepted_renderer.format == 'csv':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'yield')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.csv'
         return response
 
 class YieldPaginatedViewSet(viewsets.ModelViewSet):
@@ -320,6 +323,9 @@ class AreaViewSet(viewsets.ModelViewSet):
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','),  'physical_area')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        if response.accepted_renderer.format == 'csv':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'physical_area')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.csv'
         return response
 
 class AreaPaginatedViewSet(viewsets.ModelViewSet):
@@ -364,6 +370,9 @@ class ProdViewSet(viewsets.ModelViewSet):
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','),  'production')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        if response.accepted_renderer.format == 'csv':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'production')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.csv'
         return response
 
     
@@ -409,6 +418,9 @@ class HarvestedViewSet(viewsets.ModelViewSet):
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'harvested_area')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
+        if response.accepted_renderer.format == 'csv':
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'harvested_area')
+            response['content-disposition'] = 'attachment; filename=' + filename + '.csv'
         return response
 
 class HarvestedPaginatedViewSet(viewsets.ModelViewSet):
