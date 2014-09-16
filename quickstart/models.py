@@ -145,6 +145,7 @@ class Area(models.Model):
 	x = models.FloatField()
 	y = models.FloatField()
 	hc_seq5m = models.FloatField()
+	wkb_geometry = models.PolygonField()
 
 class Yield(models.Model):
 	iso3 = models.CharField(max_length=8, null = True)
@@ -432,6 +433,7 @@ class Prod(models.Model):
 	x = models.FloatField()
 	y = models.FloatField()
 	hc_seq5m = models.FloatField()
+	wkb_geometry = models.PolygonField()
 
 class Harvested(models.Model):
 	iso3 = models.CharField(max_length=8, null = True)
@@ -575,3 +577,4 @@ class Harvested(models.Model):
 	x = models.FloatField()
 	y = models.FloatField()
 	hc_seq5m = models.FloatField()
+	wkb_geometry = models.PolygonField()
