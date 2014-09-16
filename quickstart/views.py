@@ -65,7 +65,7 @@ class CustomPaginatedCSVRenderer(CSVRenderer):
 
         return csv_buffer.getvalue()
 
-allowedCrops = ['maiz', 'maiz_r', 'wkb_geometry']
+allowedCrops = ['maiz', 'whea', 'maiz_r'] #'wkb_geometry'
 
 def createShapefile(data, filename, fields):
     charset = 'utf-8'
@@ -83,8 +83,15 @@ def createShapefile(data, filename, fields):
 
     layer = ds_ogr.CreateLayer(filename.encode('utf-8'), srs, geom_type = ogr.wkbPolygon)
 
+    fieldDefn=ogr.FieldDefn('iso3'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('cell5m'.encode('utf-8'), ogr.OFTInteger)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('unit'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+
     for field in fields:
-        if (field != 'wkb_geometry'):
+        if ((field in allowedCrops) == True):
             fieldDefn=ogr.FieldDefn(field.encode('utf-8'), ogr.OFTReal)
             layer.CreateField(fieldDefn)
         
@@ -98,9 +105,9 @@ def createShapefile(data, filename, fields):
         feature = ogr.Feature(featureDefn)
         feature.SetGeometry(poly)
 
-        feature.SetField('iso3'.encode('utf-8'), i['iso3'])
+        feature.SetField('iso3'.encode('utf-8'), i['iso3'].encode('utf-8'))
         feature.SetField('cell5m'.encode('utf-8'), i['cell5m'])
-        feature.SetField('unit'.encode('utf-8'), i['unit'])
+        feature.SetField('unit'.encode('utf-8'), i['unit'].encode('utf-8'))
         for field in fields:
             if ((field in allowedCrops) == True):
                 feature.SetField(field.encode('utf-8'), i[field])
@@ -138,14 +145,16 @@ def createGeoTIFF(data, filename, field):
     band = target_ds.GetRasterBand(1)
     band.SetNoDataValue(NoData_value)
     # Rasterize
-    gdal.RasterizeLayer(target_ds, [1], source_layer, burn_values=[0], options=["ATTRIBUTE=%s" % field.encode('utf-8')])    
+    gdal.RasterizeLayer(target_ds, [1], source_layer, burn_values=[0], options=["ATTRIBUTE=%s" % field[0].encode('utf-8')])    
 
 def buildFileName(fields, iso3s, variable):
     filename = 'spam2005_' + variable
     for field in fields:
         if ((field in allowedCrops) == True):
             filename = filename + '_' + field
-    filename = filename + '_' + iso3s.replace(',','_').strip('_')
+    for iso3 in iso3s:
+        filename = filename + '_' + iso3
+
     return filename
 
 class ShapefileRenderer(BaseRenderer):
@@ -156,8 +165,10 @@ class ShapefileRenderer(BaseRenderer):
     headers = None 
 
     def render(self, data, media_type=None, renderer_context=None):
-        filename = buildFileName(renderer_context.get('request').QUERY_PARAMS.get('fields'), renderer_context.get('request').QUERY_PARAMS.get('iso3'), renderer_context.get('view').fileslug)
         fields = renderer_context.get('request').QUERY_PARAMS.get('fields').split(',')
+        iso3s = renderer_context.get('request').QUERY_PARAMS.get('iso3').split(',')
+        filename = buildFileName(fields, iso3s, renderer_context.get('view').fileslug)
+        
         createShapefile(data, filename, fields)
 
         temp = tempfile.TemporaryFile()
@@ -179,22 +190,24 @@ class GeoTIFFRenderer(BaseRenderer):
 
     def render(self, data, media_type=None, renderer_context=None):
         fileslug = renderer_context.get('view').fileslug
-        
-        filename_all = buildFileName(renderer_context.get('request').QUERY_PARAMS.get('fields'), renderer_context.get('request').QUERY_PARAMS.get('iso3'), fileslug)
         fields = renderer_context.get('request').QUERY_PARAMS.get('fields').split(',')
         iso3s = renderer_context.get('request').QUERY_PARAMS.get('iso3').split(',')
         
+        filename_all = buildFileName(fields, iso3s, fileslug)
+        
         temp = tempfile.TemporaryFile()
         archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
-        print fields
+        
         for field in fields:
             for iso3 in iso3s:
-                if ((field in allowedCrops) == True and field != 'wkb_geometry'):
-                    filename = buildFileName(field, iso3, fileslug)
-                    f = list()
-                    f.append(field)
-                    createShapefile(data, filename, f)
-                    createGeoTIFF(data, filename, field)
+                if ((field in allowedCrops) == True):
+                    print iso3; print field
+                    single_field = list(); single_field.append(field)
+                    single_iso3 = list(); single_iso3.append(iso3)
+                    filename = buildFileName(single_field, single_iso3, fileslug)
+                    
+                    createShapefile(data, filename, single_field)
+                    createGeoTIFF(data, filename, single_field)
                     archive.write(filename +'.tif', filename +'.tif')
         archive.close()
         temp.seek(0)
@@ -261,7 +274,7 @@ class YieldViewSet(viewsets.ModelViewSet):
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
-            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'yield')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
         return response
 
@@ -305,7 +318,7 @@ class AreaViewSet(viewsets.ModelViewSet):
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
-            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','),  'physical_area')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
         return response
 
@@ -349,7 +362,7 @@ class ProdViewSet(viewsets.ModelViewSet):
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
-            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','),  'production')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
         return response
 
@@ -394,7 +407,7 @@ class HarvestedViewSet(viewsets.ModelViewSet):
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
-            filename = buildFileName(request.QUERY_PARAMS.get('fields'), request.QUERY_PARAMS.get('iso3'), 'yield')
+            filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'harvested_area')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
         return response
 

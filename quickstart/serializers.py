@@ -35,13 +35,6 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             allowed = set(fields)
             mandatory = set([u'iso3', u'cell5m', u'unit', u'wkb_geometry'])
             existing = set(self.fields.keys())
-
-            print 'mandatory:'
-            print existing
-            print mandatory
-            print allowed
-            print existing - allowed
-            print existing - allowed - mandatory
             for field_name in existing - allowed - mandatory:
                 self.fields.pop(field_name)
 
