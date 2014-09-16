@@ -319,7 +319,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     # set filename
     def finalize_response(self, request, response, *args, **kwargs):
-        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        response = super(AreaViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','),  'physical_area')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
@@ -366,7 +366,7 @@ class ProdViewSet(viewsets.ModelViewSet):
 
     # set filename
     def finalize_response(self, request, response, *args, **kwargs):
-        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        response = super(ProdViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','),  'production')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
@@ -414,7 +414,7 @@ class HarvestedViewSet(viewsets.ModelViewSet):
 
     # set filename
     def finalize_response(self, request, response, *args, **kwargs):
-        response = super(YieldViewSet, self).finalize_response(request, response, *args, **kwargs)
+        response = super(HarvestedViewSet, self).finalize_response(request, response, *args, **kwargs)
         if response.accepted_renderer.format == 'shapefile' or response.accepted_renderer.format == 'geotiff':
             filename = buildFileName(request.QUERY_PARAMS.get('fields').split(','), request.QUERY_PARAMS.get('iso3').split(','), 'harvested_area')
             response['content-disposition'] = 'attachment; filename=' + filename + '.zip'
