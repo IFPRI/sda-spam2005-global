@@ -310,7 +310,7 @@ class AreaViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
     def get_queryset(self):
         
-        queryset = Yield.objects.all()
+        queryset = Area.objects.all()
         iso3 = self.request.QUERY_PARAMS.get('iso3', None)
         if iso3 is not None:
             iso3 = iso3.split(',')
@@ -357,7 +357,7 @@ class ProdViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
     def get_queryset(self):
         
-        queryset = Yield.objects.all()
+        queryset = Prod.objects.all()
         iso3 = self.request.QUERY_PARAMS.get('iso3', None)
         if iso3 is not None:
             iso3 = iso3.split(',')
@@ -405,7 +405,7 @@ class HarvestedViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer, CustomCSVRenderer, ShapefileRenderer, GeoTIFFRenderer, ImageRenderer)
     def get_queryset(self):
         
-        queryset = Yield.objects.all()
+        queryset = Harvested.objects.all()
         iso3 = self.request.QUERY_PARAMS.get('iso3', None)
         if iso3 is not None:
             iso3 = iso3.split(',')
