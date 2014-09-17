@@ -70,3 +70,12 @@ a.button.menu {
 	line-height: 21px;
 }
 
+.btn-primary:active, .btn-primary.active {
+	background-color: #14456F;
+	border-color: #2b669a;
+}
+
+#download_button {
+	width: 151px;
+}
+
