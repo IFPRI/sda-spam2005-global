@@ -96,7 +96,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 
 	map.drawcoastlines(linewidth=0.05)
 	paths = []
-	for line in shp_info[4]._paths:
+	for line in shp_coast[4]._paths:
 		if np.any(line.vertices[:,1] > -60):
 			paths.append(matplotlib.path.Path(line.vertices,  codes=line.codes))
 	coll_coastline = matplotlib.collections.PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=2)
