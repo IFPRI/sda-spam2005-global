@@ -85,12 +85,12 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 
 	paths = []
 	for line in shp_lakes[4]._paths:
-    	paths.append(Path(line.vertices, codes=line.codes))
+		paths.append(Path(line.vertices, codes=line.codes))
 	coll_lakes = PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
 
 	paths = []
 	for line in shp_rivers[4]._paths:
-    	paths.append(Path(line.vertices, codes=line.codes))
+		paths.append(Path(line.vertices, codes=line.codes))
 	coll_rivers = PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=4)
 
 	map.drawcoastlines(linewidth=0.05)
