@@ -87,19 +87,19 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	paths = []
 	for line in shp_lakes[4]._paths:
 		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_lakes = PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
+	coll_lakes = matplotlib.path.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
 
 	paths = []
 	for line in shp_rivers[4]._paths:
 		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_rivers = PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=4)
+	coll_rivers = matplotlib.path.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=4)
 
 	map.drawcoastlines(linewidth=0.05)
 	paths = []
 	for line in shp_info[4]._paths:
 		if np.any(line.vertices[:,1] > -60):
 			paths.append(matplotlib.path.Path(line.vertices,  codes=line.codes))
-	coll_coastline = PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=2)
+	coll_coastline = matplotlib.path.PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=2)
 
 	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326,  lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
 	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 5)
