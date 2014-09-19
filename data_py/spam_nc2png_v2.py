@@ -79,7 +79,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 
 	#map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20) # includes all Antarctica
 	#kav7
-	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
+	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
 	shp_coast = map.readshapefile('/home/mcomanescu/ne_110m_coastline/ne_110m_coastline', 'scalerank', drawbounds=True, linewidth=0.05)
 	shp_rivers = map.readshapefile('/home/mcomanescu/ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, linewidth=0.05)
 	shp_lakes = map.readshapefile('/home/mcomanescu/ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.05)
@@ -101,7 +101,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 			paths.append(matplotlib.path.Path(line.vertices,  codes=line.codes))
 	coll_coastline = matplotlib.collections.PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=5)
 
-	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326,  lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
+	map = Basemap(projection='merc',resolution='i', epsg=4326,  lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
 	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 4)
 
 	map.drawcountries(linewidth=0.05, zorder = 6)
