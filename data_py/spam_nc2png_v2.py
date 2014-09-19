@@ -78,15 +78,41 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 
 	#map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20) # includes all Antarctica
 	#kav7
-	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
-	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True))
-	map.drawlsmask(land_color='#fafafa', lakes = True)
-	
-	map.drawcountries(linewidth=0.05)
+	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
+	shp_coast = map.readshapefile('/home/mcomanescu/ne_110m_coastline/ne_110m_coastline', 'scalerank', drawbounds=True, linewidth=0.05)
+	shp_rivers = map.readshapefile('/home/mcomanescu/ne_110m_rivers_lakes_centerlines/ne_110m_rivers_lakes_centerlines', 'scalerank', drawbounds=True, linewidth=0.05)
+	shp_lakes = map.readshapefile('/home/mcomanescu/ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.05)
+
+	paths = []
+	for line in shp_lakes[4]._paths:
+    	paths.append(Path(line.vertices, codes=line.codes))
+	coll_lakes = PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
+
+	paths = []
+	for line in shp_rivers[4]._paths:
+    	paths.append(Path(line.vertices, codes=line.codes))
+	coll_rivers = PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=4)
+
 	map.drawcoastlines(linewidth=0.05)
+	paths = []
+	for line in shp_info[4]._paths:
+		if np.any(line.vertices[:,1] > -60):
+			paths.append(Path(line.vertices,  codes=line.codes))
+	coll_coastline = PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=2)
+
+	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326,  lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
+	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 5)
+
+	map.drawcountries(linewidth=0.05, zorder = 6)
+
+	ax = plt.gca()
+	ax.add_collection(coll_lakes)
+	ax.add_collection(coll_rivers)
+	ax.add_collection(coll_coastline)
+
+	map.drawlsmask(land_color='#f0f0f0', lakes = False, zorder = 2)
 
 	cbar = map.colorbar(cs,location='bottom', pad='3%')
-	#cbar.ax.set_xlabel(unitLabel, fontsize = 'x-small'); lebel
 
 	labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
 	labels[0] = '1'; labels[6] = labels[6] + ' <'; labels[7] = ''
@@ -95,6 +121,21 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=400)
 
+for crop in ('whea', 'smil'):
+	result = read_data('quickstart_harvested', crop)
+	bins = get_bins(result.d2)
+	if (len(bins) != 0):
+		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
+ 		plot_map(result, bins, sequential.Oranges[7], cropName, 'Total', 'Harvested Area', 'ha', 'quickstart_harvested', crop)
+ 		
+ 		result_i = read_data('quickstart_harvested', crop + '_i')
+ 		plot_map(result_i, bins, sequential.Oranges[7], cropName, 'Irrigated', 'Harvested Area', 'ha', 'quickstart_harvested', crop + '_i')
+ 		
+ 		result_r = read_data('quickstart_harvested', crop + '_r')
+ 		plot_map(result_r, bins, sequential.Oranges[7], cropName, 'Rainfed', 'Harvested Area', 'ha', 'quickstart_harvested', crop + '_r')
+
+
+'''
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 #for crop in ('whea', 'smil'):
 	result = read_data('quickstart_harvested', crop)
@@ -147,3 +188,4 @@ for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'po
  		
  		result_r = read_data('quickstart_prod', crop + '_r')
  		plot_map(result_r, bins, sequential.Greens[7], cropName, 'Rainfed', 'Production', 'mt', 'quickstart_prod', crop + '_r')
+ 		'''

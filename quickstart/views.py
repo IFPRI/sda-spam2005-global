@@ -229,6 +229,8 @@ class CustomCSVRenderer(CSVRenderer):
         """
         if data is None:
             return ''
+        d = data[0].keys()(0)
+        print 'tttttttt'; print d
 
         if not isinstance(data, list):
             data = [data]
@@ -245,7 +247,7 @@ class CustomCSVRenderer(CSVRenderer):
         for row in data:
             # Assume that strings should be encoded as UTF-8
             csv_writer.writerow([
-                elem.encode('utf-8') if isinstance(elem, text_type) and PY2 else elem
+                elem.encode('utf-8') if isinstance(elem, text_type) and PY2 and elem != 'wkb_geometry' else elem
                 for elem in row.values()
             ])
 
