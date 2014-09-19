@@ -87,22 +87,22 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	paths = []
 	for line in shp_lakes[4]._paths:
 		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
+	coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=2)
 
 	paths = []
 	for line in shp_rivers[4]._paths:
 		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_rivers = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=4)
+	coll_rivers = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
 
 	map.drawcoastlines(linewidth=0.05)
 	paths = []
 	for line in shp_coast[4]._paths:
 		if np.any(line.vertices[:,1] > -60):
 			paths.append(matplotlib.path.Path(line.vertices,  codes=line.codes))
-	coll_coastline = matplotlib.collections.PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=2)
+	coll_coastline = matplotlib.collections.PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=5)
 
 	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326,  lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
-	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 5)
+	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 4)
 
 	map.drawcountries(linewidth=0.05, zorder = 6)
 
@@ -111,7 +111,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	ax.add_collection(coll_rivers)
 	ax.add_collection(coll_coastline)
 
-	map.drawlsmask(land_color='#f0f0f0', lakes = False, zorder = 2)
+	#map.drawlsmask(land_color='#f0f0f0', lakes = False, zorder = 2)
 
 	cbar = map.colorbar(cs,location='bottom', pad='3%')
 
@@ -122,21 +122,21 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=400)
 
-for crop in ('whea', 'smil'):
+for crop in ('whea'):
 	result = read_data('quickstart_harvested', crop)
 	bins = get_bins(result.d2)
 	if (len(bins) != 0):
 		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
  		plot_map(result, bins, sequential.Oranges[7], cropName, 'Total', 'Harvested Area', 'ha', 'quickstart_harvested', crop)
  		
- 		result_i = read_data('quickstart_harvested', crop + '_i')
+ 	'''	result_i = read_data('quickstart_harvested', crop + '_i')
  		plot_map(result_i, bins, sequential.Oranges[7], cropName, 'Irrigated', 'Harvested Area', 'ha', 'quickstart_harvested', crop + '_i')
  		
  		result_r = read_data('quickstart_harvested', crop + '_r')
  		plot_map(result_r, bins, sequential.Oranges[7], cropName, 'Rainfed', 'Harvested Area', 'ha', 'quickstart_harvested', crop + '_r')
 
 
-'''
+
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 #for crop in ('whea', 'smil'):
 	result = read_data('quickstart_harvested', crop)
