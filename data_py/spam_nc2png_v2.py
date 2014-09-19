@@ -122,7 +122,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=400)
 
-for crop in ('whea'):
+for crop in (['whea']):
 	result = read_data('quickstart_harvested', crop)
 	bins = get_bins(result.d2)
 	if (len(bins) != 0):
