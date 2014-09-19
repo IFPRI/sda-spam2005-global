@@ -11,6 +11,7 @@ from PIL import Image
 from netCDF4 import Dataset
 import numpy.ma as ma
 import pysal.esda.mapclassify as br
+import sys 
 
 variablePath  = '/home/tmp/nc/'
 #variablePath = '/Users/maria/Downloads/'
@@ -80,7 +81,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	#kav7
 	map = Basemap(projection='merc',resolution='i', ellps ='WGS84', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
 	shp_coast = map.readshapefile('/home/mcomanescu/ne_110m_coastline/ne_110m_coastline', 'scalerank', drawbounds=True, linewidth=0.05)
-	shp_rivers = map.readshapefile('/home/mcomanescu/ne_110m_rivers_lakes_centerlines/ne_110m_rivers_lakes_centerlines', 'scalerank', drawbounds=True, linewidth=0.05)
+	shp_rivers = map.readshapefile('/home/mcomanescu/ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, linewidth=0.05)
 	shp_lakes = map.readshapefile('/home/mcomanescu/ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.05)
 
 	paths = []
