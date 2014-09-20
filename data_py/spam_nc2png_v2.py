@@ -103,21 +103,6 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=400)
 
-for crop in (['whea']):
-	result = read_data('quickstart_harvested', crop)
-	bins = get_bins(result.d2)
-	if (len(bins) != 0):
-		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
- 		plot_map(result, bins, sequential.Oranges[7], cropName, 'Total', 'Harvested Area', 'ha', 'quickstart_harvested', crop)
- 		
- 	'''	result_i = read_data('quickstart_harvested', crop + '_i')
- 		plot_map(result_i, bins, sequential.Oranges[7], cropName, 'Irrigated', 'Harvested Area', 'ha', 'quickstart_harvested', crop + '_i')
- 		
- 		result_r = read_data('quickstart_harvested', crop + '_r')
- 		plot_map(result_r, bins, sequential.Oranges[7], cropName, 'Rainfed', 'Harvested Area', 'ha', 'quickstart_harvested', crop + '_r')
-
-
-
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 #for crop in ('whea', 'smil'):
 	result = read_data('quickstart_harvested', crop)
@@ -170,4 +155,4 @@ for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'po
  		
  		result_r = read_data('quickstart_prod', crop + '_r')
  		plot_map(result_r, bins, sequential.Greens[7], cropName, 'Rainfed', 'Production', 'mt', 'quickstart_prod', crop + '_r')
- 		'''
+ 		
