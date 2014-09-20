@@ -101,6 +101,7 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	labels[0] = '1'; labels[6] = labels[6] + ' <'; labels[7] = ''
 	cbar.ax.set_xticklabels(labels)
 
+	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=400)
 
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
