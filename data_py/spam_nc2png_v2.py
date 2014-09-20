@@ -77,41 +77,23 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 
 	plt.figimage(logos,1830, 100)
 
-	#map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20) # includes all Antarctica
-	#kav7
 	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
-	shp_coast = map.readshapefile('/home/mcomanescu/ne_110m_coastline/ne_110m_coastline', 'scalerank', drawbounds=True, linewidth=0.05)
-	shp_rivers = map.readshapefile('/home/mcomanescu/ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, linewidth=0.05)
-	shp_lakes = map.readshapefile('/home/mcomanescu/ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.05)
+	map.drawlsmask(land_color='#fafafa', lakes = False, zorder = 1)
+	shp_coast = map.readshapefile('/home/mcomanescu/ne_50m_coastline/ne_50m_coastline', 'scalerank', drawbounds=True, linewidth=0.1, color = '#e0e0e0')
+	shp_rivers = map.readshapefile('/home/mcomanescu/ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, color='#c6dbef', linewidth=0.1, zorder = 5)
+	shp_lakes = map.readshapefile('/home/mcomanescu/ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.1, color='#c6dbef', zorder=4)
 
 	paths = []
 	for line in shp_lakes[4]._paths:
 		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=2)
+	coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
 
-	paths = []
-	for line in shp_rivers[4]._paths:
-		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_rivers = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#c6dbef', zorder=3)
+	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 6)
 
-	map.drawcoastlines(linewidth=0.05)
-	paths = []
-	for line in shp_coast[4]._paths:
-		if np.any(line.vertices[:,1] > -60):
-			paths.append(matplotlib.path.Path(line.vertices,  codes=line.codes))
-	coll_coastline = matplotlib.collections.PathCollection(paths, linewidths=0.05, facecolors = '#fafafa', zorder=5)
-
-	map = Basemap(projection='merc',resolution='i', epsg=4326,  lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
-	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 4)
-
-	map.drawcountries(linewidth=0.05, zorder = 6)
+	map.drawcountries(linewidth=0.05, color='#e0e0e0', zorder = 7)
 
 	ax = plt.gca()
 	ax.add_collection(coll_lakes)
-	ax.add_collection(coll_rivers)
-	ax.add_collection(coll_coastline)
-
-	#map.drawlsmask(land_color='#f0f0f0', lakes = False, zorder = 2)
 
 	cbar = map.colorbar(cs,location='bottom', pad='3%')
 
@@ -119,7 +101,6 @@ def plot_map(res, bins, bmap, cropName, technologyName, variableName, unitLabel,
 	labels[0] = '1'; labels[6] = labels[6] + ' <'; labels[7] = ''
 	cbar.ax.set_xticklabels(labels)
 
-	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=400)
 
 for crop in (['whea']):
