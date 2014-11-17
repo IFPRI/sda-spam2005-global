@@ -119,6 +119,8 @@ def createShapefile(data, filename, fields):
 
     ds_ogr.Destroy()
 
+# review: https://djangosnippets.org/snippets/365/ !!!!!!!!!!!!!!!!!!!!!!!!!
+
 def createGeoTIFF(data, filename, field):
     pixel_size = 0.08333333
     NoData_value = -9999
