@@ -20,11 +20,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '548!p0*+=4c*&2f+b#35px32tvc@y$+d^p5h(q!lml)h+4yc28'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost','api.mapspam.info','481266.mpdedicated.com']
 
 SITE_ID = 1
 
