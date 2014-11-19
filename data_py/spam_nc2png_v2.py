@@ -19,7 +19,7 @@ variablePath  = '/home/tmp/nc/'
 cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
 #cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 
-logos = Image.open('/home/mcomanescu/logos/spam_logos2.png')
+logos = Image.open('/home/mcomanescu/logos/SPAM_logos_v4.png')
 #logos = Image.open('/Users/maria/Projects/tests/results/SPAM_logos_v4.png')
 
 outputFolder = '/home/tmp/png/'
