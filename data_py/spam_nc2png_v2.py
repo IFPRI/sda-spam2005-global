@@ -162,55 +162,55 @@ def plot_map(res, bins, cmap, cropName, technologyName, variableName, unitLabel,
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 
 	result = read_data('quickstart_harvested', crop)
-	bins = get_bins(result.d2)
+	bins = get_bins(result.d2, 8)
 	if (len(bins) != 0):
 		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
- 		plot_map(result, bins, sequential.YlOrBr[7], cropName, 'Total', 'Harvested Area', 'ha', 'quickstart_harvested')
+ 		plot_map(result, bins, harvested_colormap, cropName, 'Total', 'Harvested Area', 'ha', 'quickstart_harvested')
  		
  		result_i = read_data('quickstart_harvested', crop + '_i')
- 		plot_map(result_i, bins, sequential.YlOrBr[7], cropName, 'Irrigated', 'Harvested Area', 'ha', 'quickstart_harvested')
+ 		plot_map(result_i, bins, harvested_colormap, cropName, 'Irrigated', 'Harvested Area', 'ha', 'quickstart_harvested')
  		
  		result_r = read_data('quickstart_harvested', crop + '_r')
- 		plot_map(result_r, bins, sequential.YlOrBr[7], cropName, 'Rainfed', 'Harvested Area', 'ha', 'quickstart_harvested')
+ 		plot_map(result_r, bins, harvested_colormap, cropName, 'Rainfed', 'Harvested Area', 'ha', 'quickstart_harvested')
 
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 	result = read_data('quickstart_area', crop)
-	bins = get_bins(result.d2)
+	bins = get_bins(result.d2, 8)
 	if (len(bins) != 0):
 		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
- 		plot_map(result, bins, sequential.YlGn[7], cropName, 'Total', 'Physical Area', 'ha', 'quickstart_area')
+ 		plot_map(result, bins, area_colormap, cropName, 'Total', 'Physical Area', 'ha', 'quickstart_area')
  		
  		result_i = read_data('quickstart_area', crop + '_i')
- 		plot_map(result_i, bins, sequential.YlGn[7], cropName, 'Irrigated', 'Physical Area', 'ha', 'quickstart_area')
+ 		plot_map(result_i, bins, area_colormap, cropName, 'Irrigated', 'Physical Area', 'ha', 'quickstart_area')
  		
  		result_r = read_data('quickstart_area', crop + '_r')
- 		plot_map(result_r, bins, sequential.YlGn[7], cropName, 'Rainfed', 'Physical Area', 'ha', 'quickstart_area')
+ 		plot_map(result_r, bins, area_colormap, cropName, 'Rainfed', 'Physical Area', 'ha', 'quickstart_area')
 
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 	result = read_data('quickstart_yield', crop)
-	bins = get_bins(result.d2)
+	bins = get_bins(result.d2, 9)
 	if (len(bins) != 0):
 		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
- 		plot_map(result, bins, sequential.GnBu[7], cropName, 'Total', 'Yield', 'kg/ha', 'quickstart_yield')
+ 		plot_map(result, bins, yield_colormap, cropName, 'Total', 'Yield', 'kg/ha', 'quickstart_yield')
  		
  		result_i = read_data('quickstart_yield', crop + '_i')
- 		plot_map(result_i, bins, sequential.GnBu[7], cropName, 'Irrigated', 'Yield', 'kg/ha', 'quickstart_yield')
+ 		plot_map(result_i, bins, yield_colormap, cropName, 'Irrigated', 'Yield', 'kg/ha', 'quickstart_yield')
  		
  		result_r = read_data('quickstart_yield', crop + '_r')
- 		plot_map(result_r, bins, sequential.GnBu[7], cropName, 'Rainfed', 'Yield', 'kg/ha', 'quickstart_yield')
+ 		plot_map(result_r, bins, yield_colormap, cropName, 'Rainfed', 'Yield', 'kg/ha', 'quickstart_yield')
 
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 	result = read_data('quickstart_prod', crop)
-	bins = get_bins(result.d2)
+	bins = get_bins(result.d2, 9)
 	if (len(bins) != 0):
 		cropName = cropList[cropList['varCode'] == crop].varName.values[0]
- 		plot_map(result, bins, sequential.YlGnBu[7], cropName, 'Total', 'Production', 'mt', 'quickstart_prod')
+ 		plot_map(result, bins, prod_colormap, cropName, 'Total', 'Production', 'mt', 'quickstart_prod')
  		
  		result_i = read_data('quickstart_prod', crop + '_i')
- 		plot_map(result_i, bins, sequential.YlGnBu[7], cropName, 'Irrigated', 'Production', 'mt', 'quickstart_prod')
+ 		plot_map(result_i, bins, prod_colormap, cropName, 'Irrigated', 'Production', 'mt', 'quickstart_prod')
  		
  		result_r = read_data('quickstart_prod', crop + '_r')
- 		plot_map(result_r, bins, sequential.YlGnBu[7], cropName, 'Rainfed', 'Production', 'mt', 'quickstart_prod')
+ 		plot_map(result_r, bins, prod_colormap, cropName, 'Rainfed', 'Production', 'mt', 'quickstart_prod')
  		
 ######## to test single prints
 '''
