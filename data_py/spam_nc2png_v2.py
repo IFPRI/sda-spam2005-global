@@ -158,7 +158,7 @@ def plot_map(res, bins, cmap, cropName, technologyName, variableName, unitLabel,
 	outputFile = outputFile.lower()
 	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=1000)
 
-
+'''
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 
 	result = read_data('quickstart_harvested', crop)
@@ -172,7 +172,7 @@ for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'po
  		
  		result_r = read_data('quickstart_harvested', crop + '_r')
  		plot_map(result_r, bins, harvested_colormap, cropName, 'Rainfed', 'Harvested Area', 'ha', 'quickstart_harvested')
-
+'''
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 	result = read_data('quickstart_area', crop)
 	bins = get_bins(result.d2, 8)
