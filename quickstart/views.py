@@ -224,6 +224,8 @@ class ImageRenderer(BaseRenderer):
     # to be continued
 
 class CustomCSVRenderer(CSVRenderer):
+    content_type = 'text/csv'
+    format = 'csv'
 
     def render(self, data, media_type=None, renderer_context=None):
         """
@@ -231,8 +233,6 @@ class CustomCSVRenderer(CSVRenderer):
         """
         if data is None:
             return ''
-        d = data[0].keys()(0)
-        print 'tttttttt'; print d
 
         if not isinstance(data, list):
             data = [data]
