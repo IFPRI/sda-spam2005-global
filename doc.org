@@ -10,7 +10,11 @@ http://api.mapspam.info/yield/?iso3=[iso3]&fields=[field]&format=[format]
 
 - multiple values can be submitted for [field] and [iso3] separated by comma 
 
-- example: http://api.mapspam.info/yield/?iso3=ROU&fields=maiz%2Csmil_i&format=csv
+- examples: 
+  http://api.mapspam.info/yield/?iso3=ROU&fields=maiz,smil_i&format=shapefile
+  http://api.mapspam.info/yield/?iso3=GHA,ROU&fields=maiz,smil_i&format=geotiff
+  http://api.mapspam.info/yield/?iso3=UGA&fields=rice,rice_r,rice_i&format=csv
+  http://api.mapspam.info/yield/?iso3=ROU&fields=maiz,smil_i&format=json
 
 
 * Output files:
