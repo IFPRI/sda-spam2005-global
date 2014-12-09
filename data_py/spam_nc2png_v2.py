@@ -13,20 +13,20 @@ import numpy.ma as ma
 import pysal.esda.mapclassify as br
 import sys 
 
-variablePath  = '/home/tmp/nc/'
-#variablePath = '/Users/maria/Downloads/'
+#variablePath  = '/home/tmp/nc/'
+variablePath = '/Users/maria/Downloads/'
 
-cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
-#cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
+#cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
+cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 
-logos = Image.open('/home/mcomanescu/logos/SPAM_logos_v4.png')
-#logos = Image.open('/Users/maria/Projects/tests/results/SPAM_logos_v4.png')
+#logos = Image.open('/home/mcomanescu/logos/SPAM_logos_v4.png')
+logos = Image.open('/Users/maria/Projects/tests/results/SPAM_logos_v4.png')
 
-outputFolder = '/home/tmp/png/'
-#outputFolder = '/Users/maria/Downloads/'
+#outputFolder = '/home/tmp/png/'
+outputFolder = '/Users/maria/Downloads/'
 
-baseShpLoc = '/home/mcomanescu/'
-#baseShpLoc = '/Users/maria/Projects/tests/'
+#baseShpLoc = '/home/mcomanescu/'
+baseShpLoc = '/Users/maria/Projects/tests/'
 
 ############ re-use spam2000 colors
 cdict_harvested = {'red': ((0., 1, 1), (0.17, 0.91, 0.91), 
@@ -79,7 +79,6 @@ def read_data(variableFolder, crop):
 	filename = crop + '.tiff.nc'
 	print variablePath + variableFolder + '/' + filename
 	datafile = Dataset(variablePath + variableFolder + '/' + filename)
-	#datafile = Dataset(variablePath + filename)
 
 	data = datafile.variables['Band1'][:]
 	lats = datafile.variables['lat'][:]
@@ -214,10 +213,11 @@ for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'po
  		
 ######## to test single prints
 '''
-cropName = cropList[cropList['varCode'] == 'whea'].varName.values[0]
+cropName = cropList[cropList['varCode'] == 'orts'].varName.values[0]
 
-result = read_data('quickstart_harvested', 'whea')
+result = read_data('quickstart_harvested', 'orts')
 bins = get_bins(result.d2, 8)
+print bins
 plot_map(result, bins, harvested_colormap, cropName, 'Total', 'Harvested Area', 'ha', 'quickstart_harvested')
 
 result = read_data('quickstart_area', 'whea')
