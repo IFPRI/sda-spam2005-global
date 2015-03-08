@@ -1,4 +1,6 @@
 #!/usr/bin/env python2.7
+# Start server within an infinite loop: while true; do python2.7 manage.py runserver ; sleep 1; done
+
 import os
 import sys
 
