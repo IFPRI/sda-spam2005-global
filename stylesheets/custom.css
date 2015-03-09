@@ -71,8 +71,14 @@ a.button.menu {
 }
 
 .btn-primary:active, .btn-primary.active {
-	background-color: #8d9332;
-	border-color: #8d9332;
+	background-color: #9da639;
+	border-color: #9da639;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: #cccccc;
+  	border-color: #cccccc;
 }
 
 #download_button {
