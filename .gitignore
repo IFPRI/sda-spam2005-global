@@ -1,2 +1,4 @@
 *.pyc
 debug.log
+*/data_raw/*
+*/hc_grid/*
