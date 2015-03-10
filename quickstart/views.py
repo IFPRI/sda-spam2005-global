@@ -150,7 +150,7 @@ def createGeoTIFF(data, filename, field):
     gdal.RasterizeLayer(target_ds, [1], source_layer, burn_values=[0], options=["ATTRIBUTE=%s" % field[0].encode('utf-8')])    
 
 def buildFileName(fields, iso3s, variable):
-    filename = 'spam2005_' + variable
+    filename = 'spam2005v2r0_' + variable
     for field in fields:
         if ((field in allowedCrops) == True):
             filename = filename + '_' + field
