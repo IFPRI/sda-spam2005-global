@@ -1,0 +1,1 @@
+for i in $(ls *.png); do name=`echo $i | cut -d'.' -f1`.jpg; convert $i -resize 75% $name; done;

@@ -1,6 +1,5 @@
 import matplotlib
 matplotlib.use('Agg')
-from mpl_toolkits.basemap import Basemap
 from matplotlib.colors import BoundaryNorm, Normalize
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,6 +12,7 @@ import numpy.ma as ma
 import pysal.esda.mapclassify as br
 import sys 
 import os
+from mpl_toolkits.basemap import Basemap
 
 os.chdir('/Users/maria/Projects/spam2005-global/data_py/data_build_v2r0')
 #os.chdir('/home/django/spam2005-global/data_py/data_build_v2r0/')
@@ -152,7 +152,7 @@ def plot_map(res, bins, cmap, cropName, fileName, technologyName, variableName, 
 	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
 	
 	outputFile = 'spam2005v2r0_' + techFolder + '_' + fileName + '_' + technologyName.lower()
-	plt.savefig(outputFolder + '/' + techFolder + '/' + outputFile + '.png', format='png', dpi=1000)
+	plt.savefig(outputFolder + '/' + techFolder + '/' + outputFile + '.png', format='png', dpi=900)
 
 #if __name__ == '__main__':
 
@@ -185,7 +185,7 @@ for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'po
  		result_r = read_data('physical-area', cropList[cropList['varCode'] == crop].fileName.values[0] + '_rainfed')
  		plot_map(result_r, bins, area_colormap, cropName, fileName, 'Rainfed', 'Physical Area', 'ha', 'physical-area')
 
-for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
+for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent','opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
 	result = read_data('yield', cropList[cropList['varCode'] == crop].fileName.values[0] + '_total')
 	bins = get_bins(result.d2, 9)
 	if (len(bins) != 0):
@@ -215,8 +215,79 @@ for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'po
 		
 ######## to test single prints
 
-'''cropName = cropList[cropList['varCode'] == 'maiz'].varName.values[0]
-result = read_data('harvested-area', cropList[cropList['varCode'] == 'maiz'].fileName.values[0] + '_total')
-bins = get_bins(result.d2, 9)
+cropName = cropList[cropList['varCode'] == 'lent'].varName.values[0]
+result = read_data('yield', cropList[cropList['varCode'] == 'lent'].fileName.values[0] + '_total')
+bins = get_bins(result.d2, 7)
 plot_map(result, bins, yield_colormap, cropName, 'Total', 'Yield', 'ha')
-'''
+
+# do lentil yield separately:
+crop = 'lent'
+result = read_data('yield', cropList[cropList['varCode'] == crop].fileName.values[0] + '_total')
+bins = get_bins(result.d2, 8)
+print bins
+cropName = cropList[cropList['varCode'] == crop].varName.values[0]
+fileName = cropList[cropList['varCode'] == crop].fileName.values[0]
+plot_map(result, bins, yield_colormap, cropName, fileName, 'Total', 'Yield', 'kg/ha', 'yield')
+
+result_i = read_data('yield', cropList[cropList['varCode'] == crop].fileName.values[0] + '_irrigated')
+plot_map(result_i, bins, yield_colormap, cropName, fileName, 'Irrigated', 'Yield', 'kg/ha', 'yield')
+
+result_r = read_data('yield', cropList[cropList['varCode'] == crop].fileName.values[0] + '_rainfed')
+plot_map(result_r, bins, yield_colormap, cropName, fileName, 'Rainfed', 'Yield', 'kg/ha', 'yield')
+
+
+cmap = yield_colormap
+variableName = 'Yield'
+unitLabel = 'kg/ha'
+techFolder = 'yield'
+
+res = result
+technologyName = 'Total'
+res = result_i
+technologyName = 'Irrigated'
+res = result_r
+technologyName = 'Rainfed'
+
+figTitle = cropName + ' ' + technologyName + ' ' + variableName + ' (' + unitLabel + ')' 
+
+plt.close()
+plt.figtext(0.025,0.92, figTitle, clip_on = 'True', size = 'large', weight = 'semibold'); 
+plt.figtext(0.025,0.86, 'Spatially disaggregated production statistics of circa 2005 using the Spatial Production Allocation Model (SPAM).', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
+plt.figtext(0.025,0.835,'Values are for 5 arc-minute grid cells.', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
+
+plt.figtext(0.025,0.072, 'You, L., U. Wood-Sichra, S. Fritz, Z. Guo, L. See, and J. Koo. 2014', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
+plt.figtext(0.025,0.051, 'Spatial Production Allocation Model (SPAM) 2005 Version 2.0.', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
+plt.figtext(0.025,0.030, '03.10.2015. Available from http://mapspam.info', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium');
+
+plt.figimage(logos, 4100, 200)
+
+map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
+map.drawlsmask(land_color='#fffff0', lakes = False, zorder = 1)
+shp_coast = map.readshapefile(baseShpLoc + '/ne_50m_coastline/ne_50m_coastline', 'scalerank', drawbounds=True, linewidth=0.1, color = '#828282', zorder = 7)
+shp_rivers = map.readshapefile(baseShpLoc + '/ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, color='#e8f8ff', linewidth=0.1, zorder = 5)
+shp_lakes = map.readshapefile(baseShpLoc + '/ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.1, color='#e8f8ff', zorder=4)
+
+paths = []
+for line in shp_lakes[4]._paths:
+	paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
+coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#e8f8ff', zorder=3)
+
+cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 6)
+
+map.drawcountries(linewidth=0.1, color='#828282', zorder = 8)
+
+ax = plt.gca()
+ax.add_collection(coll_lakes)
+
+cbar = map.colorbar(cs,location='bottom', pad='3%')
+
+labelSize = 7
+labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
+labels[0] = '1'; labels[labelSize - 1] = labels[labelSize - 1] + ' <'; labels[labelSize] = ''
+cbar.ax.set_xticklabels(labels)
+
+plt.tight_layout(h_pad=0.9, w_pad = 0.9)
+
+outputFile = 'spam2005v2r0_' + techFolder + '_' + fileName + '_' + technologyName.lower()
+plt.savefig(outputFolder + '/' + techFolder + '/' + outputFile + '.png', format='png', dpi=900)
+
