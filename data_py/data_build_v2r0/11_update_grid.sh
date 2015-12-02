@@ -24,6 +24,7 @@ update spam2005v2r0_production y set wkb_geometry = (select h.wkb_geometry from 
 update spam2005v2r0_harvested_area y set wkb_geometry = (select h.wkb_geometry from hc_grid5m_all h where h.dn = y.cell5m);
 update spam2005v2r0_physical_area y set wkb_geometry = (select h.wkb_geometry from hc_grid5m_all h where h.dn = y.cell5m);
 update spam2005v2r0_yield y set wkb_geometry = (select h.wkb_geometry from hc_grid5m_all h where h.dn = y.cell5m);
+update spam2005v2r0_value_production y set wkb_geometry = (select h.wkb_geometry from hc_grid5m_all h where h.dn = y.cell5m);
 
 select count(*) from spam2005v2r0_production y, hc_grid5m_all h where y.cell5m = h.cell5m and y.wkb_geometry <> h.wkb_geometry;
 

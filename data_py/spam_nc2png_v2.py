@@ -12,21 +12,23 @@ from netCDF4 import Dataset
 import numpy.ma as ma
 import pysal.esda.mapclassify as br
 import sys 
+import mpld3
+import svgutils
+import svgutils.transform as sg
 
-variablePath  = '/home/tmp/nc/'
-#variablePath = '/Users/maria/Downloads/'
+fig=plt.figure()
+ax=fig.add_axes((0,0,1,1))
+ax.set_axis_off()
+ax.plot([3,1,1,2,1])
+ax.plot([1,3,1,2,3])
+fig.savefig('/Users/maria/Downloads/out.svg')
 
-cropList = pd.read_csv('/home/django/spam2005-global/data_py/spam_crops.csv')
-#cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
 
-logos = Image.open('/home/mcomanescu/logos/SPAM_logos_v4.png')
-#logos = Image.open('/Users/maria/Projects/tests/results/SPAM_logos_v4.png')
-
-outputFolder = '/home/tmp/png/'
-#outputFolder = '/Users/maria/Downloads/'
-
-baseShpLoc = '/home/mcomanescu/'
-#baseShpLoc = '/Users/maria/Projects/tests/'
+variablePath = '/Users/maria/Downloads/'
+cropList = pd.read_csv('/Users/maria/Projects/spam2005-global/data_py/spam_crops.csv')
+logos = Image.open('/Users/maria/Projects/tests/results/SPAM_logos_v4.png')
+outputFolder = '/Users/maria/Downloads/'
+baseShpLoc = '/Users/maria/Projects/tests/'
 
 ############ re-use spam2000 colors
 cdict_harvested = {'red': ((0., 1, 1), (0.17, 0.91, 0.91), 
@@ -109,54 +111,73 @@ def get_bins(d2, k):
 
 	return jc.bins
 
+cropName = cropList[cropList['varCode'] == 'whea'].varName.values[0]
+
+res = read_data('quickstart_yield', 'spam2005v2r0_yield_wheat_total')
+bins = get_bins(res.d2, 9)
+technologyName = 'Total'
+variableName = 'Yield'
+unitLabel = 'kg/ha'
+parentFolder = 'quickstart_yield'
+res = result
+cmap = yield_colormap
+
 def plot_map(res, bins, cmap, cropName, technologyName, variableName, unitLabel, parentFolder):
 	
-	figTitle = cropName + ' ' + technologyName + ' ' + variableName + ' (' + unitLabel + ')' 
+figTitle = cropName + ' ' + technologyName + ' ' + variableName + ' (' + unitLabel + ')' 
 
-	plt.close()
-	plt.figtext(0.025,0.92, figTitle, clip_on = 'True', size = 'large', weight = 'semibold'); 
-	plt.figtext(0.025,0.86, 'Spatially disaggregated production statistics of circa 2005 using the Spatial Production Allocation Model (SPAM).', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
-	plt.figtext(0.025,0.835,'Values are for 5 arc-minute grid cells.', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
+plt.close()
+plt.figtext(0.025,0.92, figTitle, clip_on = 'True', size = 'large', weight = 'semibold'); 
+plt.figtext(0.025,0.86, 'Spatially disaggregated production statistics of circa 2005 using the Spatial Production Allocation Model (SPAM).', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
+plt.figtext(0.025,0.835,'Values are for 5 arc-minute grid cells.', clip_on = 'True', size = 'x-small', stretch = 'semi-condensed', weight = 'medium');
 
-	plt.figtext(0.025,0.072, 'You, L., U. Wood-Sichra, S. Fritz, Z. Guo, L. See, and J. Koo. 2014', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
-	plt.figtext(0.025,0.051, 'Spatial Production Allocation Model (SPAM) 2005 Beta Version.', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
-	plt.figtext(0.025,0.030, '08.15.2014. Available from http://mapspam.info', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium');
+plt.figtext(0.025,0.072, 'You, L., U. Wood-Sichra, S. Fritz, Z. Guo, L. See, and J. Koo. 2014', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
+plt.figtext(0.025,0.051, 'Spatial Production Allocation Model (SPAM) 2005 Beta Version.', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium')
+plt.figtext(0.025,0.030, '08.15.2014. Available from http://mapspam.info', clip_on = 'True', size = 'xx-small', stretch = 'semi-condensed', weight = 'medium');
 
-	plt.figimage(logos, 4100, 200)
+plt.figimage(logos, 4100, 200)
 
-	map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
-	map.drawlsmask(land_color='#fffff0', lakes = False, zorder = 1)
-	shp_coast = map.readshapefile(baseShpLoc + 'ne_50m_coastline/ne_50m_coastline', 'scalerank', drawbounds=True, linewidth=0.1, color = '#828282', zorder = 7)
-	shp_rivers = map.readshapefile(baseShpLoc + 'ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, color='#e8f8ff', linewidth=0.1, zorder = 5)
-	shp_lakes = map.readshapefile(baseShpLoc + 'ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.1, color='#e8f8ff', zorder=4)
+map = Basemap(projection='merc',resolution='i', epsg=4326, lat_0 = 0, lon_0 = 20, llcrnrlon=-160, llcrnrlat=-70, urcrnrlon=200, urcrnrlat=90)
+map.drawlsmask(land_color='#fffff0', lakes = False, zorder = 1)
+shp_coast = map.readshapefile(baseShpLoc + 'ne_50m_coastline/ne_50m_coastline', 'scalerank', drawbounds=True, linewidth=0.1, color = '#828282', zorder = 7)
+shp_rivers = map.readshapefile(baseShpLoc + 'ne_110m_rivers_lake_centerlines/ne_110m_rivers_lake_centerlines', 'scalerank', drawbounds=True, color='#e8f8ff', linewidth=0.1, zorder = 5)
+shp_lakes = map.readshapefile(baseShpLoc + 'ne_110m_lakes/ne_110m_lakes', 'scalerank', drawbounds=True, linewidth=0.1, color='#e8f8ff', zorder=4)
 
-	paths = []
-	for line in shp_lakes[4]._paths:
-		paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
-	coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#e8f8ff', zorder=3)
+paths = []
+for line in shp_lakes[4]._paths:
+	paths.append(matplotlib.path.Path(line.vertices, codes=line.codes))
+coll_lakes = matplotlib.collections.PathCollection(paths, linewidths=0, facecolors='#e8f8ff', zorder=3)
 
-	cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 6)
+cs = map.pcolormesh(res.lons, res.lats, res.d2, cmap=cmap, norm=BoundaryNorm(bins, 256, clip=True), zorder = 6)
+cs.set_rasterized(True)
 
-	map.drawcountries(linewidth=0.1, color='#828282', zorder = 8)
+map.drawcountries(linewidth=0.1, color='#828282', zorder = 8)
 
-	ax = plt.gca()
-	ax.add_collection(coll_lakes)
+plt.savefig('/Users/maria/Downloads/map2.svg', format='svg', dpi=150)
 
-	cbar = map.colorbar(cs,location='bottom', pad='3%')
+ax = plt.gca()
+ax.add_collection(coll_lakes)
 
-	if (variableName == 'Production' or variableName == 'Yield'):
-		labelSize = 8
-	else :
-		labelSize = 7
-	labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
-	labels[0] = '1'; labels[labelSize - 1] = labels[labelSize - 1] + ' <'; labels[labelSize] = ''
-	cbar.ax.set_xticklabels(labels)
+cbar = map.colorbar(cs,location='bottom', pad='3%')
 
-	plt.tight_layout(h_pad=0.9, w_pad = 0.9)
-	
-	outputFile = 'spam2005v1r0_' + variableName.replace(' ', '-') + '_' + cropName + '_' + technologyName
-	outputFile = outputFile.lower()
-	plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png', dpi=1000)
+if (variableName == 'Production' or variableName == 'Yield'):
+	labelSize = 8
+else :
+	labelSize = 7
+labels = [item.get_text() for item in cbar.ax.get_xticklabels()]
+labels[0] = '1'; labels[labelSize - 1] = labels[labelSize - 1] + ' <'; labels[labelSize] = ''
+cbar.ax.set_xticklabels(labels)
+
+plt.tight_layout(h_pad=0.9, w_pad = 0.9)
+
+outputFile = 'spam2005v1r0_' + variableName.replace(' ', '-') + '_' + cropName + '_' + technologyName
+outputFile = outputFile.lower()
+plt.savefig(outputFolder + parentFolder + '/' + outputFile + '.png', format='png')
+
+plt.savefig('/Users/maria/Downloads/.svg', format='svg')
+, format='svg', dpi=1000)
+fig = plt.figure()
+mpld3.display_d3(fig)
 
 '''
 for crop in ('whea', 'rice', 'maiz', 'barl', 'pmil', 'smil', 'sorg', 'ocer', 'pota', 'swpo', 'yams', 'cass', 'orts', 'bean', 'chic', 'cowp', 'pige', 'lent', 'opul', 'soyb', 'grou', 'cnut', 'oilp', 'sunf', 'rape', 'sesa', 'ooil', 'sugc', 'sugb', 'cott', 'ofib', 'acof', 'rcof', 'coco', 'teas', 'toba', 'bana', 'plnt', 'trof', 'temf', 'vege', 'rest'):
@@ -224,7 +245,7 @@ result = read_data('quickstart_area', 'whea')
 bins = get_bins(result.d2, 8)
 plot_map(result, bins, area_colormap, cropName, 'Total', 'Physical Area', 'ha', 'quickstart_area')
 
-result = read_data('quickstart_yield', 'whea')
+result = read_data('quickstart_yield', 'spam2005v2r0_yield_wheat_total')
 bins = get_bins(result.d2, 9)
 plot_map(result, bins, yield_colormap, cropName, 'Total', 'Yield', 'kg/ha', 'quickstart_yield')
 
