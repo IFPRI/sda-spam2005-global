@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Spam2005-global by harvestchoice</title>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/select2.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/select2-bootstrap.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/prettyCheckable.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/bootstrap-flat.css">
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/custom.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <script src="javascripts/data.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="javascripts/main.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/select2.js"></script>
+    <script type="text/javascript" src="javascripts/prettyCheckable.min.js"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+    <header>
+      <h1>Download SPAM 2005 datasets</h1>
+    </header>
+
+   <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h3>
+<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to MapSpaM</h3>
+<p>Select one variable - Harvested Area (Hectares), Production (Tons), Yield (Kilograms / Hectare), Physical Area (Hectares), one or more countries, crops and input systems, and download the dateset shaped into the selected format.</p>
+
+<div class="input-elem-row">
+  <div class="labels-col">
+    <h3>Variable</h3>
+  </div>
+
+  <div class="btn-group btn-group-justified input-elems-col" data-toggle="buttons">
+    <label class="btn btn-primary active"><input type="radio" name="options" id="harvested_area" checked>Harvested Area</label>
+    <label class="btn btn-primary"><input type="radio" name="options" id="production">Production</label>
+    <label class="btn btn-primary"><input type="radio" name="options" id="yield">Yield</label>
+    <label class="btn btn-primary"><input type="radio" name="options" id="physical_area">Physical Area</label>
+  </div>
+</div>
+
+<div class="input-elem-row">
+  <div class="labels-col">
+    <h3>Countries</h3>
+  </div>
+
+  <div class="input-elems-col">
+    <select id="countries" class="multi select2" style="width: 100%; height: 40px;" multiple="multiple">
+      <optgroup id="asia" label = "Asia"></optgroup>
+      <optgroup id="canada" label = "Canada"></optgroup>
+      <optgroup id="europe" label = "Europe"></optgroup>
+      <optgroup id="lac" label = "Latin and Central America"></optgroup>
+      <optgroup id="mideast" label = "Middle East"></optgroup>
+      <optgroup id="nafrica" label = "Northern Africa"></optgroup>
+      <optgroup id="oceania" label = "Oceania"></optgroup>
+      <optgroup id="russia" label = "Russia"></optgroup>
+      <optgroup id="ssa" label = "Sub-Saharan Africa"></optgroup>
+      <optgroup id="usa" label = "United States"></optgroup>
+    </select>
+  </div>
+</div>
+
+<div class="input-elem-row">
+  <div class="labels-col">
+    <h3>Crops</h3>
+  </div>
+
+  <div class="input-elems-col">
+    <select id="crops" class="multi select2" style="width: 100%; height: 40px;" multiple="multiple">
+      <optgroup label="Cereals">
+        <option value="barl">Barley</option>
+        <option value="maiz">Maize</option>
+        <option value="pmil">Pearl millet</option>
+        <option value="rice">Rice</option>
+        <option value="smil">Small millet</option>
+        <option value="sorg">Sorghum</option>
+        <option value="whea">Wheat</option>
+        <option value="ocer">Other cereals</option>
+      </optgroup>
+      <optgroup label="Fibres">
+        <option value="cott">Cotton</option>
+         <option value="ofib">Other fibres</option>
+      </optgroup>
+      <optgroup label="Fruits & Vegetables">
+        <option value="bana">Banana</option>
+        <option value="plnt">Plantain</option>
+        <option value="temf">Temperate fruit</option>
+        <option value="trof">Tropical fruit</option>
+        <option value="vege">Vegetables</option>
+      </optgroup>
+      <optgroup label="Oil-bearing Crops">
+        <option value="cnut">Coconut</option>
+        <option value="grou">Groundnut</option>
+        <option value="oilp">Oilpalm</option>
+        <option value="ooil">Other oil crops</option>
+        <option value="rape">Rapeseed</option>
+        <option value="sesa">Sesameseed</option>
+        <option value="soyb">Soybean</option>
+        <option value="sunf">Sunflower</option>
+      </optgroup>
+      <optgroup label="Pulses">
+        <option value="bean">Bean</option>
+        <option value="chic">Chickpea</option>
+        <option value="cowp">Cowpea</option>
+        <option value="lent">Lentil</option>
+        <option value="opul">Other pulses</option>
+        <option value="pige">Pigeonpea</option>
+      </optgroup>
+      <optgroup label="Rest of Crops">
+        <option value="rest">Rest of crops</option>
+      </optgroup>
+      <optgroup label="Roots & Tubers">
+        <option value="cass">Cassava</option>
+        <option value="pota">Potato</option>
+        <option value="swpo">Sweet potato</option>
+        <option value="yams">Yams</option>
+        <option value="orts">Other roots & tubers</option>
+      </optgroup>
+      <optgroup label="Stimulant Crops">
+        <option value="coco">Cocoa</option>
+        <option value="acof">Arabica coffee</option>
+        <option value="rcof">Robusta coffee</option>
+        <option value="teas">Tea</option>
+        <option value="toba">Tobacco</option>
+      </optgroup>
+      <optgroup label="Sugar Crops">
+        <option value="sugb">Sugarbeet</option>
+        <option value="sugc">Sugar Cane</option>
+      </optgroup>
+    </select>
+  </div>
+</div>
+
+<div class="input-elem-row">
+  <div class="labels-col">
+    <h3>Technologies</h3>
+  </div>
+
+  <div class="input-elems-col">
+    <select id="technologies" class="multi select2" style="width: 100%; height: 40px;" multiple="multiple">
+      <option value="">Total</option>
+      <option value="_i">Irrigated</option>
+      <option value="_r">Rainfed</option>
+    </select>
+  </div>
+</div>
+
+<div class="input-elem-row">
+  <div class="labels-col">
+    <h3>Format</h3>
+  </div>
+
+  <div class="input-elems-col">
+    <select id="file_format" class="multi select2" style="width: 100%; height: 40px;">
+      <option value="csv">CSV</option>
+      <option value="shapefile">Shapefile</option>
+      <option value="geotiff">GeoTIFF</option>
+    </select>
+  </div>
+</div>
+ 
+<button type="button" id="download_button" class="btn btn-success btn-large" style="float: right">Download</button>
+
+  </section>
+      <footer>
+        <a href="http://harvestchoice.org"><img src="images/hc_white_small2.png"></img></a>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
