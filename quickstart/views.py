@@ -87,7 +87,19 @@ def createShapefile(data, filename, fields):
     layer.CreateField(fieldDefn)
     fieldDefn=ogr.FieldDefn('cell5m'.encode('utf-8'), ogr.OFTInteger)
     layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('alloc_key'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
     fieldDefn=ogr.FieldDefn('unit'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('prod_level'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('crea_date'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('name_cntr'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('name_adm1'.encode('utf-8'), ogr.OFTString)
+    layer.CreateField(fieldDefn)
+    fieldDefn=ogr.FieldDefn('name_adm2'.encode('utf-8'), ogr.OFTString)
     layer.CreateField(fieldDefn)
 
     for field in fields:
@@ -107,7 +119,13 @@ def createShapefile(data, filename, fields):
 
         feature.SetField('iso3'.encode('utf-8'), i['iso3'].encode('utf-8'))
         feature.SetField('cell5m'.encode('utf-8'), i['cell5m'])
+        feature.SetField('alloc_key'.encode('utf-8'), i['alloc_key'].encode('utf-8'))
         feature.SetField('unit'.encode('utf-8'), i['unit'].encode('utf-8'))
+        feature.SetField('prod_level'.encode('utf-8'), i['prod_level'].encode('utf-8'))
+        feature.SetField('crea_date'.encode('utf-8'), i['crea_date'].encode('utf-8'))
+        feature.SetField('name_cntr'.encode('utf-8'), i['name_cntr'].encode('utf-8'))
+        feature.SetField('name_adm1'.encode('utf-8'), i['name_adm1'].encode('utf-8'))
+        feature.SetField('name_adm2'.encode('utf-8'), i['name_adm2'].encode('utf-8'))
         for field in fields:
             if ((field in allowedCrops) == True):
                 feature.SetField(field.encode('utf-8'), i[field])
